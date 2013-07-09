@@ -1,4 +1,4 @@
-#include "RubyEngine.h"
+#include "RubyEngine.hpp"
 
 int main(int argc, const char **argv)
 {
