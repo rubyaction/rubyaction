@@ -44,11 +44,6 @@ namespace RubyAction
     return loaded;
   }
 
-  mrb_value RubyEngine::execute(RProc *proc, mrb_value arg)
-  {
-    return mrb_run(mrb, proc, arg);
-  }
-
   void RubyEngine::garbageCollect()
   {
     mrb_garbage_collect(mrb);

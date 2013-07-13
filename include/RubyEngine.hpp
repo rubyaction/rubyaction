@@ -22,7 +22,6 @@ namespace RubyAction
     static RubyEngine* getInstance();
     void bind(bind_func);
     bool load(const char*);
-    mrb_value execute(RProc*, mrb_value);
     void garbageCollect();
     mrb_state* getState();
   };
