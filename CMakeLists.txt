@@ -10,6 +10,7 @@ project(${project_name})
 set(${project_name}_include
   include
   lib/include/mruby
+  lib/include/glfw
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
@@ -20,8 +21,18 @@ include_directories(${${project_name}_include})
 add_library(mruby STATIC IMPORTED)
 set_property(TARGET mruby PROPERTY IMPORTED_LOCATION lib/osx/libmruby.a)
 
+# glfw
+add_library(glfw STATIC IMPORTED)
+set_property(TARGET glfw PROPERTY IMPORTED_LOCATION lib/osx/libglfw3.a)
+
+# frameworks
+find_library(cocoa Cocoa)
+find_library(iokit IOKit)
+find_library(opengl OpenGL)
+
 set(${project_name}_libraries
-  mruby
+  mruby glfw
+  ${cocoa} ${iokit} ${opengl}
 )
 
 add_definitions(-std=c++11)

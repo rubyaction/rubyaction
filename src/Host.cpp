@@ -1,14 +1,15 @@
-#include "RubyEngine.hpp"
-#include "EventDispatcher.hpp"
+#include "Application.hpp"
+
 
 int main(int argc, const char **argv)
 {
-  const char *filename = (argc > 1) ? argv[1] : "main.rb";
+  RubyAction::Application *app = RubyAction::Application::getInstance();
 
-  RubyAction::RubyEngine *engine = RubyAction::RubyEngine::getInstance();
-  engine->bind(RubyAction::bindEventDispatcher);
-  engine->load(filename);
+  app->config.width = 800;
+  app->config.height = 600;
+  app->config.title = "RubyAction";
+  app->config.fps = 60;
 
-  return 0;
+  return app->run((argc > 1) ? argv[1] : "main.rb");
 }
 
