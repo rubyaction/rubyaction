@@ -59,7 +59,7 @@ namespace RubyAction
     size_t length;
     mrb_get_args(mrb, "s", &filename, &length);
 
-    SET_INSTANCE(new Texture(self, filename))
+    SET_INSTANCE(self, new Texture(self, filename))
     return self;
   }
 

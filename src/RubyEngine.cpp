@@ -1,5 +1,5 @@
 #include "RubyEngine.hpp"
-
+#include "mruby/class.h"
 
 namespace RubyAction
 {
@@ -53,6 +53,21 @@ namespace RubyAction
   mrb_state* RubyEngine::getState()
   {
     return mrb;
+  }
+
+  RClass* RubyEngine::getClass(const char *name)
+  {
+    RClass *module = mrb_class_get(mrb, "RubyAction");
+    return mrb_class_get_under(mrb, module, name);
+  }
+
+  mrb_value RubyEngine::newInstance(const char *classname, int argc, mrb_value *argv)
+  {
+    mrb_value object;
+    RBasic *basic = mrb_obj_alloc(mrb, MRB_TT_DATA, getClass(classname));
+    object = mrb_obj_value(basic);
+    mrb_obj_call_init(mrb, object, argc, argv);
+    return object;
   }
 
 }

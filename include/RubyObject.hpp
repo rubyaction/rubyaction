@@ -40,18 +40,18 @@ namespace RubyAction
 
   extern struct mrb_data_type mrb_ruby_object_binding;
 
-#define SET_INSTANCE(value) \
-  mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, self, &mrb_ruby_object_binding); \
+#define SET_INSTANCE(value, object) \
+  { mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, value, &mrb_ruby_object_binding); \
   if (wrapper) mrb_ruby_object_free(mrb, wrapper); \
   wrapper = new mrb_ruby_object_type; \
-  wrapper->instance = value; \
-  DATA_PTR(self) = wrapper; \
-  DATA_TYPE(self) = &mrb_ruby_object_binding;
+  wrapper->instance = object; \
+  DATA_PTR(value) = wrapper; \
+  DATA_TYPE(value) = &mrb_ruby_object_binding; }
 
-#define GET_INSTANCE(type) \
-  mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, self, &mrb_ruby_object_binding); \
-  if (!wrapper || !wrapper->instance) return self; \
-  type *instance = (type*) wrapper->instance;
+#define GET_INSTANCE(value, variable, type) \
+  type *variable; \
+  { mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, value, &mrb_ruby_object_binding); \
+  variable = (type*) wrapper->instance; }
 
 }
 

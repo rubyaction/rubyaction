@@ -24,6 +24,8 @@ namespace RubyAction
     bool load(const char*);
     void garbageCollect();
     mrb_state* getState();
+    RClass* getClass(const char *);
+    mrb_value newInstance(const char *, int, mrb_value *);
   };
 
 }

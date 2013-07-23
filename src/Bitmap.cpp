@@ -1,4 +1,5 @@
 #include "Bitmap.hpp"
+#include "TextureRegion.hpp"
 #include <mruby/variable.h>
 
 namespace RubyAction
@@ -18,24 +19,25 @@ namespace RubyAction
     mrb_value arg;
     mrb_get_args(mrb, "o", &arg);
 
-    struct RClass *module = mrb_class_get(mrb, "RubyAction");
-    struct RClass *texture = mrb_class_get_under(mrb, module, "Texture");
-    struct RClass *textureRegion = mrb_class_get_under(mrb, module, "Sprite");
+    RubyEngine *engine = RubyEngine::getInstance();
+    mrb_value textureRegion;
 
-    if (mrb_obj_is_kind_of(mrb, arg, texture))
-    {
-      mrb_iv_set(mrb, self, mrb_intern(mrb, "texture"), arg);
-    }
-    else if (mrb_obj_is_kind_of(mrb, arg, textureRegion))
-    {
-      mrb_iv_set(mrb, self, mrb_intern(mrb, "region"), arg);
-    }
+    if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("Texture")))
+      textureRegion = engine->newInstance("TextureRegion", 1, &arg);
+    else if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("TextureRegion")))
+      textureRegion = arg;
     else
-    {
       mrb_raise(mrb, E_TYPE_ERROR, "expected Texture or TextureRegion");
-    }
 
-    SET_INSTANCE(new Bitmap(self));
+    mrb_iv_set(mrb, self, mrb_intern(mrb, "texture_region"), textureRegion);
+
+    GET_INSTANCE(textureRegion, region, TextureRegion)
+
+    Bitmap *bitmap = new Bitmap(self);
+    bitmap->setWidth(region->getWidth());
+    bitmap->setHeight(region->getHeight());
+
+    SET_INSTANCE(self, bitmap);
     return self;
   }
 

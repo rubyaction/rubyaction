@@ -40,7 +40,7 @@ namespace RubyAction
 
   static mrb_value EventDispatcher_initialize(mrb_state *mrb, mrb_value self)
   {
-    SET_INSTANCE(new EventDispatcher(self))
+    SET_INSTANCE(self, new EventDispatcher(self))
     return self;
   }
 
@@ -53,8 +53,8 @@ namespace RubyAction
 
     if (argc == 2) listener = mrb_symbol_value(method);
 
-    GET_INSTANCE(EventDispatcher)
-    instance->on(name, listener);
+    GET_INSTANCE(self, dispatcher, EventDispatcher)
+    dispatcher->on(name, listener);
 
     return self;
   }
@@ -64,12 +64,12 @@ namespace RubyAction
     mrb_sym name;
     int argc = mrb_get_args(mrb, "|n", &name);
 
-    GET_INSTANCE(EventDispatcher)
+    GET_INSTANCE(self, dispatcher, EventDispatcher)
 
     if (argc == 0)
-      instance->off();
+      dispatcher->off();
     else
-      instance->off(name);
+      dispatcher->off(name);
 
     return self;
   }
@@ -82,8 +82,8 @@ namespace RubyAction
 
     if (argc == 1) data = mrb_nil_value();
 
-    GET_INSTANCE(EventDispatcher)
-    instance->dispatch(name, data);
+    GET_INSTANCE(self, dispatcher, EventDispatcher)
+    dispatcher->dispatch(name, data);
 
     return self;
   }

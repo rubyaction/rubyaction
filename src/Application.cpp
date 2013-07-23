@@ -5,6 +5,7 @@
 #include "Texture.hpp"
 #include "Sprite.hpp"
 #include "Bitmap.hpp"
+#include "TextureRegion.hpp"
 #include <iostream>
 
 namespace RubyAction
@@ -36,6 +37,7 @@ namespace RubyAction
     engine->bind(RubyAction::bindTexture);
     engine->bind(RubyAction::bindSprite);
     engine->bind(RubyAction::bindBitmap);
+    engine->bind(RubyAction::bindTextureRegion);
     engine->load(filename);
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {

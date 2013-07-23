@@ -4,7 +4,9 @@ namespace RubyAction
 {
 
   TextureBase::TextureBase(mrb_value self)
-    : RubyObject(self), width(0), height(0)
+    : RubyObject(self),
+      width(0),
+      height(0)
   {
   }
 
@@ -20,20 +22,20 @@ namespace RubyAction
 
   static mrb_value TextureBase_initialize(mrb_state *mrb, mrb_value self)
   {
-    SET_INSTANCE(new TextureBase(self))
+    SET_INSTANCE(self, new TextureBase(self))
     return self;
   }
 
   static mrb_value TextureBase_getWidth(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(TextureBase)
-    return mrb_fixnum_value(instance->getWidth());
+    GET_INSTANCE(self, base, TextureBase)
+    return mrb_fixnum_value(base->getWidth());
   }
 
   static mrb_value TextureBase_getHeight(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(TextureBase)
-    return mrb_fixnum_value(instance->getHeight());
+    GET_INSTANCE(self, base, TextureBase)
+    return mrb_fixnum_value(base->getHeight());
   }
 
   void bindTextureBase(mrb_state *mrb, RClass *module)

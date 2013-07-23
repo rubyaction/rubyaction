@@ -138,14 +138,14 @@ namespace RubyAction
     mrb_value children = mrb_ary_new(mrb);
     mrb_iv_set(mrb, self, mrb_intern(mrb, "children"), children);
 
-    SET_INSTANCE(new Sprite(self));
+    SET_INSTANCE(self, new Sprite(self));
     return self;
   }
 
   static mrb_value Sprite_getX(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_fixnum_value(instance->getX());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_fixnum_value(sprite->getX());
   }
 
   static mrb_value Sprite_setX(mrb_state *mrb, mrb_value self)
@@ -153,15 +153,15 @@ namespace RubyAction
     mrb_int x;
     mrb_get_args(mrb, "i", &x);
 
-    GET_INSTANCE(Sprite)
-    instance->setX(x);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setX(x);
     return self;
   }
 
   static mrb_value Sprite_getY(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_fixnum_value(instance->getY());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_fixnum_value(sprite->getY());
   }
 
   static mrb_value Sprite_setY(mrb_state *mrb, mrb_value self)
@@ -169,8 +169,8 @@ namespace RubyAction
     mrb_int y;
     mrb_get_args(mrb, "i", &y);
 
-    GET_INSTANCE(Sprite)
-    instance->setY(y);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setY(y);
     return self;
   }
 
@@ -185,16 +185,16 @@ namespace RubyAction
     mrb_value position;
     mrb_get_args(mrb, "A", &position);
 
-    GET_INSTANCE(Sprite)
-    instance->setX(mrb_fixnum(mrb_ary_ref(mrb, position, 0)));
-    instance->setY(mrb_fixnum(mrb_ary_ref(mrb, position, 1)));
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setX(mrb_fixnum(mrb_ary_ref(mrb, position, 0)));
+    sprite->setY(mrb_fixnum(mrb_ary_ref(mrb, position, 1)));
     return self;
   }
 
   static mrb_value Sprite_getWidth(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_fixnum_value(instance->getWidth());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_fixnum_value(sprite->getWidth());
   }
 
   static mrb_value Sprite_setWidth(mrb_state *mrb, mrb_value self)
@@ -202,15 +202,15 @@ namespace RubyAction
     mrb_int width;
     mrb_get_args(mrb, "i", &width);
 
-    GET_INSTANCE(Sprite)
-    instance->setWidth(width);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setWidth(width);
     return self;
   }
 
   static mrb_value Sprite_getHeight(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_fixnum_value(instance->getHeight());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_fixnum_value(sprite->getHeight());
   }
 
   static mrb_value Sprite_setHeight(mrb_state *mrb, mrb_value self)
@@ -218,8 +218,8 @@ namespace RubyAction
     mrb_int height;
     mrb_get_args(mrb, "i", &height);
 
-    GET_INSTANCE(Sprite)
-    instance->setHeight(height);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setHeight(height);
     return self;
   }
 
@@ -234,16 +234,16 @@ namespace RubyAction
     mrb_value size;
     mrb_get_args(mrb, "A", &size);
 
-    GET_INSTANCE(Sprite)
-    instance->setWidth(mrb_fixnum(mrb_ary_ref(mrb, size, 0)));
-    instance->setHeight(mrb_fixnum(mrb_ary_ref(mrb, size, 1)));
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setWidth(mrb_fixnum(mrb_ary_ref(mrb, size, 0)));
+    sprite->setHeight(mrb_fixnum(mrb_ary_ref(mrb, size, 1)));
     return self;
   }
 
   static mrb_value Sprite_getScaleX(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_float_value(mrb, instance->getScaleX());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_float_value(mrb, sprite->getScaleX());
   }
 
   static mrb_value Sprite_setScaleX(mrb_state *mrb, mrb_value self)
@@ -251,15 +251,15 @@ namespace RubyAction
     mrb_float scaleX;
     mrb_get_args(mrb, "f", &scaleX);
 
-    GET_INSTANCE(Sprite)
-    instance->setScaleX(scaleX);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setScaleX(scaleX);
     return self;
   }
 
   static mrb_value Sprite_getScaleY(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_float_value(mrb, instance->getScaleY());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_float_value(mrb, sprite->getScaleY());
   }
 
   static mrb_value Sprite_setScaleY(mrb_state *mrb, mrb_value self)
@@ -267,8 +267,8 @@ namespace RubyAction
     mrb_float scaleY;
     mrb_get_args(mrb, "f", &scaleY);
 
-    GET_INSTANCE(Sprite)
-    instance->setScaleY(scaleY);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setScaleY(scaleY);
     return self;
   }
 
@@ -283,16 +283,16 @@ namespace RubyAction
     mrb_value scale;
     mrb_get_args(mrb, "A", &scale);
 
-    GET_INSTANCE(Sprite)
-    instance->setScaleX(mrb_float(mrb_ary_ref(mrb, scale, 0)));
-    instance->setScaleY(mrb_float(mrb_ary_ref(mrb, scale, 1)));
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setScaleX(mrb_float(mrb_ary_ref(mrb, scale, 0)));
+    sprite->setScaleY(mrb_float(mrb_ary_ref(mrb, scale, 1)));
     return self;
   }
 
   static mrb_value Sprite_getRotation(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_float_value(mrb, instance->getRotation());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_float_value(mrb, sprite->getRotation());
   }
 
   static mrb_value Sprite_setRotation(mrb_state *mrb, mrb_value self)
@@ -300,15 +300,15 @@ namespace RubyAction
     mrb_float rotation;
     mrb_get_args(mrb, "f", &rotation);
 
-    GET_INSTANCE(Sprite)
-    instance->setRotation(rotation);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setRotation(rotation);
     return self;
   }
 
   static mrb_value Sprite_isVisible(mrb_state *mrb, mrb_value self)
   {
-    GET_INSTANCE(Sprite)
-    return mrb_bool_value(instance->isVisible());
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_bool_value(sprite->isVisible());
   }
 
   static mrb_value Sprite_setVisible(mrb_state *mrb, mrb_value self)
@@ -316,8 +316,8 @@ namespace RubyAction
     mrb_bool visible;
     mrb_get_args(mrb, "b", &visible);
 
-    GET_INSTANCE(Sprite)
-    instance->setVisible(visible);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setVisible(visible);
     return self;
   }
 
@@ -333,8 +333,8 @@ namespace RubyAction
       mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
     }
 
-    GET_INSTANCE(Sprite)
-    instance->addChild(child);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->addChild(child);
     return self;
   }
 
@@ -350,8 +350,8 @@ namespace RubyAction
       mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
     }
 
-    GET_INSTANCE(Sprite)
-    instance->removeChild(child);
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->removeChild(child);
     return self;
   }
 
