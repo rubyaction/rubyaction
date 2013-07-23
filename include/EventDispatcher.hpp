@@ -7,6 +7,7 @@
 #include <mruby/value.h>
 #include <mruby/proc.h>
 
+
 namespace RubyAction
 {
 
@@ -23,8 +24,7 @@ namespace RubyAction
   };
 
   void bindEventDispatcher(mrb_state*, RClass*);
-
+  
 }
 
 #endif // __EVENT_DISPATCHER__
-

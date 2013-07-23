@@ -1,10 +1,12 @@
 #ifndef __RUBY_OBJECT__
 #define __RUBY_OBJECT__
 
+#include "RubyEngine.hpp"
 #include <stddef.h>
 #include <mruby.h>
 #include <mruby/data.h>
 #include <mruby/class.h>
+#include <mruby/string.h>
 
 namespace RubyAction
 {
@@ -13,7 +15,10 @@ namespace RubyAction
   {
   protected:
     mrb_value self;
-    RubyObject(mrb_value self) : self(self) {}
+    RubyObject(mrb_value self);
+  public:
+    virtual ~RubyObject();
+    const char * inspect();
   };
 
   struct mrb_ruby_object_type
@@ -30,25 +35,24 @@ namespace RubyAction
       delete wrapper->instance;
       wrapper->instance = NULL;
     }
-    mrb_free(mrb, pointer);
+    mrb_free(mrb, wrapper);
   }
 
-  static struct mrb_data_type mrb_ruby_object_binding = { "RubyObject", mrb_ruby_object_free };
+  extern struct mrb_data_type mrb_ruby_object_binding;
 
 #define SET_INSTANCE(value) \
-  mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_get_datatype(mrb, self, &mrb_ruby_object_binding); \
+  mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, self, &mrb_ruby_object_binding); \
   if (wrapper) mrb_ruby_object_free(mrb, wrapper); \
-  wrapper = (mrb_ruby_object_type*) mrb_malloc(mrb, sizeof(mrb_ruby_object_type)); \
+  wrapper = new mrb_ruby_object_type; \
   wrapper->instance = value; \
   DATA_PTR(self) = wrapper; \
   DATA_TYPE(self) = &mrb_ruby_object_binding;
 
 #define GET_INSTANCE(type) \
-  mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_get_datatype(mrb, self, &mrb_ruby_object_binding); \
+  mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, self, &mrb_ruby_object_binding); \
   if (!wrapper || !wrapper->instance) return self; \
   type *instance = (type*) wrapper->instance;
 
 }
 
 #endif // __RUBY_OBJECT__
-

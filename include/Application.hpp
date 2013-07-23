@@ -1,6 +1,8 @@
 #ifndef __APPLICATION__
 #define __APPLICATION__
 
+#include <SDL.h>
+
 namespace RubyAction
 {
 
@@ -9,12 +11,14 @@ namespace RubyAction
   private:
     static Application *instance;
     Application() {}
-    void update();
-    void draw();
+    SDL_Window *window;
+    SDL_Renderer *renderer;
 
   public:
     static Application* getInstance();
     int run(const char *);
+    SDL_Window* getWindow();
+    SDL_Renderer* getRenderer();
 
     struct {
       int width = 800;

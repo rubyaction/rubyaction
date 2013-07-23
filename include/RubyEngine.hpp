@@ -29,4 +29,3 @@ namespace RubyAction
 }
 
 #endif // __RUBY_ENGINE__
-

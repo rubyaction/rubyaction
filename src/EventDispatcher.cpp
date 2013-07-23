@@ -1,11 +1,11 @@
 #include "EventDispatcher.hpp"
 #include "RubyEngine.hpp"
 
-
 namespace RubyAction
 {
 
-  EventDispatcher::EventDispatcher(mrb_value self) : RubyObject(self)
+  EventDispatcher::EventDispatcher(mrb_value self)
+    : RubyObject(self)
   {
   }
 
@@ -88,7 +88,8 @@ namespace RubyAction
     return self;
   }
 
-  void bindEventDispatcher(mrb_state * mrb, RClass *module) {
+  void bindEventDispatcher(mrb_state *mrb, RClass *module)
+  {
     struct RClass *clazz = mrb_define_class_under(mrb, module, "EventDispatcher", mrb->object_class);
     MRB_SET_INSTANCE_TT(clazz, MRB_TT_DATA);
 
