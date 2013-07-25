@@ -7,6 +7,7 @@
 #include <mruby/data.h>
 #include <mruby/class.h>
 #include <mruby/string.h>
+#include <mruby/variable.h>
 
 namespace RubyAction
 {
@@ -19,6 +20,9 @@ namespace RubyAction
   public:
     virtual ~RubyObject();
     const char * inspect();
+    mrb_value getProperty(const char *);
+    void setProperty(const char *, mrb_value);
+    RubyObject* getObject(const char *);
   };
 
   struct mrb_ruby_object_type

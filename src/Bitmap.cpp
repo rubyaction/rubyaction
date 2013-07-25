@@ -12,6 +12,20 @@ namespace RubyAction
 
   void Bitmap::render(SDL_Renderer *renderer)
   {
+    if (!isVisible()) return;
+
+    TextureRegion *region = (TextureRegion*) this->getObject("texture_region");
+    Texture *texture = (Texture*) region->getObject("texture");
+
+    SDL_Rect srcrect = { region->getX(), region->getY(), region->getWidth(), region->getHeight() };
+    SDL_Rect dstrect = {
+      this->getX(),
+      this->getY(),
+      static_cast<int>(this->getWidth() * this->getScaleX()),
+      static_cast<int>(this->getHeight() * this->getScaleY())
+    };
+
+    texture->render(renderer, &srcrect, &dstrect, getRotation(), NULL, SDL_FLIP_NONE);
   }
 
   static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)

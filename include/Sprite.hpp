@@ -36,8 +36,8 @@ namespace RubyAction
     void setRotation(float);
     bool isVisible();
     void setVisible(bool);
-    void addChild(mrb_value);
-    void removeChild(mrb_value);
+    virtual void addChild(mrb_value);
+    virtual void removeChild(mrb_value);
     virtual void render(SDL_Renderer *);
   };
 

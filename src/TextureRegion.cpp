@@ -60,6 +60,8 @@ namespace RubyAction
     RClass *clazz = RubyEngine::getInstance()->getClass("Texture");
     if (!mrb_obj_is_kind_of(mrb, tex, clazz)) mrb_raise(mrb, E_TYPE_ERROR, "expected Texture");
 
+    mrb_iv_set(mrb, self, mrb_intern(mrb, "texture"), tex);
+
     GET_INSTANCE(tex, texture, Texture)
 
     if (argc < 2) x = 0;

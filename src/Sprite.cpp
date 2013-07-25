@@ -13,8 +13,8 @@ namespace RubyAction
       y(0),
       width(0),
       height(0),
-      scaleX(0),
-      scaleY(0),
+      scaleX(1),
+      scaleY(1),
       rotation(0),
       visible(true)
   {
@@ -107,7 +107,7 @@ namespace RubyAction
   void Sprite::addChild(mrb_value child)
   {
     mrb_state *mrb = RubyEngine::getInstance()->getState();
-    mrb_value children = mrb_iv_get(mrb, self, mrb_intern(mrb, "children"));
+    mrb_value children = getProperty("children");
 
     for (int i = 0; i < RARRAY_LEN(children); i++)
     {
@@ -121,7 +121,7 @@ namespace RubyAction
   void Sprite::removeChild(mrb_value child)
   {
     mrb_state *mrb = RubyEngine::getInstance()->getState();
-    mrb_value old = mrb_iv_get(mrb, self, mrb_intern(mrb, "children"));
+    mrb_value old = getProperty("children");
     mrb_value children = mrb_ary_new(mrb);
 
     for (int i = 0; i < RARRAY_LEN(old); i++)
@@ -130,7 +130,7 @@ namespace RubyAction
       if (!mrb_obj_equal(mrb, child, current)) mrb_ary_push(mrb, children, current);
     }
 
-    mrb_iv_set(mrb, self, mrb_intern(mrb, "children"), children);
+    setProperty("children", children);
   }
 
   static mrb_value Sprite_initialize(mrb_state *mrb, mrb_value self)
@@ -374,21 +374,21 @@ namespace RubyAction
     mrb_define_method(mrb, clazz, "height=", Sprite_setHeight, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "size", Sprite_getSize, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "size=", Sprite_setSize, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, clazz, "scaleX", Sprite_getScaleX, MRB_ARGS_NONE());
-    mrb_define_method(mrb, clazz, "scaleX=", Sprite_setScaleX, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, clazz, "scaleY", Sprite_getScaleY, MRB_ARGS_NONE());
-    mrb_define_method(mrb, clazz, "scaleY=", Sprite_setScaleY, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "scale_x", Sprite_getScaleX, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "scale_x=", Sprite_setScaleX, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "scale_y", Sprite_getScaleY, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "scale_y=", Sprite_setScaleY, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "scale", Sprite_getScale, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "scale=", Sprite_setScale, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "rotation", Sprite_getRotation, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "rotation=", Sprite_setRotation, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "visible?", Sprite_isVisible, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "visible=", Sprite_setVisible, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, clazz, "addChild", Sprite_addChild, MRB_ARGS_REQ(1));
-    mrb_define_method(mrb, clazz, "removeChild", Sprite_removeChild, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "add_child", Sprite_addChild, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
 
     // alias
-    mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "addChild"));
+    mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add_child"));
   }
 
 }

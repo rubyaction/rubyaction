@@ -1,5 +1,6 @@
 #include "RubyEngine.hpp"
 #include "mruby/class.h"
+#include "mruby/variable.h"
 
 namespace RubyAction
 {

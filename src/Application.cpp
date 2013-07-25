@@ -6,6 +6,7 @@
 #include "Sprite.hpp"
 #include "Bitmap.hpp"
 #include "TextureRegion.hpp"
+#include "Stage.hpp"
 #include <iostream>
 
 namespace RubyAction
@@ -38,7 +39,8 @@ namespace RubyAction
     engine->bind(RubyAction::bindSprite);
     engine->bind(RubyAction::bindBitmap);
     engine->bind(RubyAction::bindTextureRegion);
-    engine->load(filename);
+    engine->bind(RubyAction::bindStage);
+    if (!engine->load(filename)) return -1;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
       std::cout << SDL_GetError() << std::endl;
@@ -47,8 +49,8 @@ namespace RubyAction
 
     int x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, width = config.width, height = config.height;
 
-    // window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
-    // renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     SDL_AddTimer(1000 / 60, timerUpdate, NULL);
 
@@ -62,9 +64,9 @@ namespace RubyAction
         case SDL_USEREVENT:
           if (event.user.code == RUN_GAME_LOOP)
           {
-            // SDL_RenderClear(renderer);
-            // texture->draw(renderer, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
-            // SDL_RenderPresent(renderer);
+            SDL_RenderClear(renderer);
+            Stage::getInstance()->render(renderer);
+            SDL_RenderPresent(renderer);
             engine->garbageCollect();
           }
           break;
@@ -74,8 +76,8 @@ namespace RubyAction
       }
     }
 
-    // SDL_DestroyRenderer(renderer);
-    // SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 
     return 0;
   }
