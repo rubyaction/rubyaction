@@ -33,6 +33,13 @@ namespace RubyAction
     Stage::getInstance()->dispatch(mrb_intern(mrb, "mouse_move"), data, 2);
   }
 
+  void mouseButtonEvent(SDL_Event *event, const char *name)
+  {
+    mrb_state *mrb = RubyEngine::getInstance()->getState();
+    mrb_value data = mrb_fixnum_value(event->button.button);
+    Stage::getInstance()->dispatch(mrb_intern(mrb, name), &data, 1);
+  }
+
   void processInputEvents(SDL_Event *event)
   {
     switch (event->type)
@@ -41,8 +48,10 @@ namespace RubyAction
         mouseMoveEvent(event);
         break;
       case SDL_MOUSEBUTTONDOWN:
+        mouseButtonEvent(event, "mouse_down");
+        break;
       case SDL_MOUSEBUTTONUP:
-        // switch(event.button.button)
+        mouseButtonEvent(event, "mouse_up");
         break;
     }
   }
