@@ -39,6 +39,7 @@ namespace RubyAction
     virtual void addChild(mrb_value);
     virtual void removeChild(mrb_value);
     virtual void render(SDL_Renderer *);
+    virtual void dispatch(mrb_sym, mrb_value*, int);
   };
 
   void bindSprite(mrb_state*, RClass*);

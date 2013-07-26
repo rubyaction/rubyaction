@@ -8,6 +8,9 @@
 #include "TextureRegion.hpp"
 #include "Stage.hpp"
 #include <iostream>
+#include <mruby.h>
+#include <mruby/value.h>
+#include <mruby/hash.h>
 
 namespace RubyAction
 {
@@ -21,6 +24,27 @@ namespace RubyAction
     event.user.code = RUN_GAME_LOOP;
     SDL_PushEvent(&event);
     return interval;
+  }
+
+  void mouseMoveEvent(SDL_Event *event)
+  {
+    mrb_state *mrb = RubyEngine::getInstance()->getState();
+    mrb_value data[] = { mrb_fixnum_value(event->motion.x), mrb_fixnum_value(event->motion.y) };
+    Stage::getInstance()->dispatch(mrb_intern(mrb, "mouse_move"), data, 2);
+  }
+
+  void processInputEvents(SDL_Event *event)
+  {
+    switch (event->type)
+    {
+      case SDL_MOUSEMOTION:
+        mouseMoveEvent(event);
+        break;
+      case SDL_MOUSEBUTTONDOWN:
+      case SDL_MOUSEBUTTONUP:
+        // switch(event.button.button)
+        break;
+    }
   }
 
   Application *Application::instance = new Application();
@@ -73,6 +97,8 @@ namespace RubyAction
         case SDL_QUIT:
           running = false;
           break;
+        default:
+          processInputEvents(&event);
       }
     }
 

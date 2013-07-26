@@ -5,9 +5,13 @@
 namespace RubyAction
 {
 
-  Bitmap::Bitmap(mrb_value self)
+  Bitmap::Bitmap(mrb_value self, mrb_value texture_region)
     : Sprite(self)
   {
+    setProperty("texture_region", texture_region);
+    TextureRegion *region = (TextureRegion*) getObject("texture_region");
+    setWidth(region->getWidth());
+    setHeight(region->getHeight());
   }
 
   void Bitmap::render(SDL_Renderer *renderer)
@@ -26,6 +30,7 @@ namespace RubyAction
     };
 
     texture->render(renderer, &srcrect, &dstrect, getRotation(), NULL, SDL_FLIP_NONE);
+    Sprite::render(renderer);
   }
 
   static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)
@@ -34,24 +39,16 @@ namespace RubyAction
     mrb_get_args(mrb, "o", &arg);
 
     RubyEngine *engine = RubyEngine::getInstance();
-    mrb_value textureRegion;
+    mrb_value texture_region;
 
-    if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("Texture")))
-      textureRegion = engine->newInstance("TextureRegion", 1, &arg);
+    if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("TextureBase")))
+      texture_region = engine->newInstance("TextureRegion", 1, &arg);
     else if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("TextureRegion")))
-      textureRegion = arg;
+      texture_region = arg;
     else
-      mrb_raise(mrb, E_TYPE_ERROR, "expected Texture or TextureRegion");
+      mrb_raise(mrb, E_TYPE_ERROR, "expected TextureBase or TextureRegion");
 
-    mrb_iv_set(mrb, self, mrb_intern(mrb, "texture_region"), textureRegion);
-
-    GET_INSTANCE(textureRegion, region, TextureRegion)
-
-    Bitmap *bitmap = new Bitmap(self);
-    bitmap->setWidth(region->getWidth());
-    bitmap->setHeight(region->getHeight());
-
-    SET_INSTANCE(self, bitmap);
+    SET_INSTANCE(self, new Bitmap(self, texture_region));
     return self;
   }
 

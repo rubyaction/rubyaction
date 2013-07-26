@@ -42,10 +42,7 @@ namespace RubyAction
 
   Texture* TextureRegion::getTexture()
   {
-    mrb_state *mrb = RubyEngine::getInstance()->getState();
-    mrb_value tex = mrb_iv_get(mrb, self, mrb_intern(mrb, "texture"));
-    GET_INSTANCE(tex, texture, Texture)
-    return texture;
+    return (Texture*) getObject("texture");
   }
 
   static mrb_value TextureRegion_initialize(mrb_state *mrb, mrb_value self)

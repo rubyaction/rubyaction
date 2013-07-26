@@ -9,7 +9,7 @@ namespace RubyAction
   class Bitmap : public Sprite
   {
   public:
-  	Bitmap(mrb_value);
+  	Bitmap(mrb_value, mrb_value);
   	virtual void render(SDL_Renderer *);
   };
 

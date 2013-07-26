@@ -16,6 +16,7 @@ namespace RubyAction
   {
   protected:
     mrb_value self;
+    mrb_state *mrb;
     RubyObject(mrb_value self);
   public:
     virtual ~RubyObject();

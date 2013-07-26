@@ -15,7 +15,6 @@ namespace RubyAction
   public:
   	void setSelf(mrb_value);
   	static Stage* getInstance();
-  	virtual void render(SDL_Renderer *);
   };
 
   void bindStage(mrb_state*, RClass*);

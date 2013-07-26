@@ -1,5 +1,6 @@
 #include "EventDispatcher.hpp"
 #include "RubyEngine.hpp"
+#include <mruby/hash.h>
 
 namespace RubyAction
 {
@@ -7,34 +8,36 @@ namespace RubyAction
   EventDispatcher::EventDispatcher(mrb_value self)
     : RubyObject(self)
   {
+    if (!mrb_nil_p(self))
+    {
+      setProperty("listeners", mrb_hash_new(mrb));
+    }
   }
 
   void EventDispatcher::on(mrb_sym name, mrb_value listener)
   {
-    listeners[name] = listener;
+    mrb_hash_set(mrb, getProperty("listeners"), mrb_symbol_value(name), listener);
   }
 
   void EventDispatcher::off(mrb_sym name)
   {
-    listeners.erase(name);
+    mrb_hash_delete_key(mrb, getProperty("listeners"), mrb_symbol_value(name));
   }
 
   void EventDispatcher::off()
   {
-    listeners.clear();
+    setProperty("listeners", mrb_hash_new(mrb));
   }
 
-  void EventDispatcher::dispatch(mrb_sym name, mrb_value data)
+  void EventDispatcher::dispatch(mrb_sym name, mrb_value* argv, int argc)
   {
-    if (listeners.count(name))
+    mrb_value listener = mrb_hash_get(mrb, getProperty("listeners"), mrb_symbol_value(name));
+    if (!mrb_nil_p(listener))
     {
-      mrb_value listener = listeners[name];
-      mrb_state *mrb = RubyEngine::getInstance()->getState();
-
       if (mrb_symbol_p(listener))
-        mrb_funcall_argv(mrb, self, mrb_symbol(listener), 1, &data);
+        mrb_funcall_argv(mrb, self, mrb_symbol(listener), argc, argv);
       else
-        mrb_yield(mrb, listener, data);
+        mrb_yield_argv(mrb, listener, argc, argv);
     }
   }
 
@@ -77,13 +80,12 @@ namespace RubyAction
   static mrb_value EventDispatcher_dispatch(mrb_state *mrb, mrb_value self)
   {
     mrb_sym name;
-    mrb_value data;
-    int argc = mrb_get_args(mrb, "n|o", &name, &data);
-
-    if (argc == 1) data = mrb_nil_value();
+    mrb_value *argv;
+    int argc;
+    mrb_get_args(mrb, "n*", &name, &argv, &argc);
 
     GET_INSTANCE(self, dispatcher, EventDispatcher)
-    dispatcher->dispatch(name, data);
+    dispatcher->dispatch(name, argv, argc);
 
     return self;
   }

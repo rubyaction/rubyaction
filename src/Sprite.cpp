@@ -18,6 +18,10 @@ namespace RubyAction
       rotation(0),
       visible(true)
   {
+    if (!mrb_nil_p(self))
+    {
+      setProperty("children", mrb_ary_new(mrb));
+    }
   }
 
   int Sprite::getX()
@@ -102,11 +106,18 @@ namespace RubyAction
 
   void Sprite::render(SDL_Renderer *renderer)
   {
+    mrb_value children = getProperty("children");
+
+    for (int i = 0; i < RARRAY_LEN(children); i++)
+    {
+      mrb_value child = mrb_ary_ref(mrb, children, i);
+      GET_INSTANCE(child, sprite, Sprite)
+      sprite->render(renderer);
+    }
   }
 
   void Sprite::addChild(mrb_value child)
   {
-    mrb_state *mrb = RubyEngine::getInstance()->getState();
     mrb_value children = getProperty("children");
 
     for (int i = 0; i < RARRAY_LEN(children); i++)
@@ -120,7 +131,6 @@ namespace RubyAction
 
   void Sprite::removeChild(mrb_value child)
   {
-    mrb_state *mrb = RubyEngine::getInstance()->getState();
     mrb_value old = getProperty("children");
     mrb_value children = mrb_ary_new(mrb);
 
@@ -133,11 +143,21 @@ namespace RubyAction
     setProperty("children", children);
   }
 
+  void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
+  {
+    mrb_value children = getProperty("children");
+
+    for (int i = 0; i < RARRAY_LEN(children); i++)
+    {
+      GET_INSTANCE(mrb_ary_ref(mrb, children, i), child, Sprite)
+      child->dispatch(name, argv, argc);
+    }
+
+    EventDispatcher::dispatch(name, argv, argc);
+  }
+
   static mrb_value Sprite_initialize(mrb_state *mrb, mrb_value self)
   {
-    mrb_value children = mrb_ary_new(mrb);
-    mrb_iv_set(mrb, self, mrb_intern(mrb, "children"), children);
-
     SET_INSTANCE(self, new Sprite(self));
     return self;
   }
