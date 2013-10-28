@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 #include "Application.hpp"
-#include <SDL2_image/SDL_image.h>
+#include <SDL_image.h>
 
 namespace RubyAction
 {
