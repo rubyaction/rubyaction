@@ -1,5 +1,4 @@
 #include "EventDispatcher.hpp"
-#include "RubyEngine.hpp"
 #include <mruby/hash.h>
 
 namespace RubyAction
@@ -8,10 +7,7 @@ namespace RubyAction
   EventDispatcher::EventDispatcher(mrb_value self)
     : RubyObject(self)
   {
-    if (!mrb_nil_p(self))
-    {
-      setProperty("listeners", mrb_hash_new(mrb));
-    }
+    if (!mrb_nil_p(self)) setProperty("listeners", mrb_hash_new(mrb));
   }
 
   void EventDispatcher::on(mrb_sym name, mrb_value listener)
@@ -102,4 +98,3 @@ namespace RubyAction
   }
 
 }
-
