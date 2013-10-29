@@ -17,6 +17,9 @@ namespace Physics
     World(mrb_value, int, int, bool);
     virtual ~World();
     void clearForces();
+    int* getGravity();
+    void setGravity(int, int);
+    void step(float, int, int);
 
     // Box2D callbacks
     virtual void BeginContact(b2Contact*);
