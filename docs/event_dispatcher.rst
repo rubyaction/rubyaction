@@ -1,6 +1,6 @@
-=================
- EventDispatcher
-=================
+=============================
+ RubyAction::EventDispatcher
+=============================
 
 .. rb:module:: RubyAction
 
@@ -17,7 +17,7 @@
   When a touch or mouse event occurs, RubyAction dispatches an event object into the event flow from the root of the scene tree.
   On the other hand, :rb:meth:`Event.ENTER_FRAME` event is dispatched to all :rb:meth:`Sprite` objects.
 
-  .. code:: ruby
+  .. code-block:: ruby
 
     dispatcher = RubyAction::EventDispatcher.new
     dispatcher.on :event, { puts 'Event received' }
@@ -33,7 +33,7 @@
     obj is the (local) object we want to create a stub for. Normally this is nil.
     uri is the URI of the remote object that this will be a stub for.
 
-    *Parameters:*
+    **Parameters:**
       - **primeiro** - iqweiuq qwetiqwte iqw asdsajhdgjhasg dhjsag dhjasg ``dhjasg`` hjdg `asjhd` _gjashg_ djasg djhgas jdg asjdg jasgd jas gdjasgjdh gasjhd gajsd gjas dgj
       - **segundo** - asjdas
 

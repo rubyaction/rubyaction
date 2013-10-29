@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>EventDispatcher &mdash; RubyAction 0.0.1 documentation</title>
+    <title>RubyAction::EventDispatcher &mdash; RubyAction 0.0.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -27,9 +26,16 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="RubyAction 0.0.1 documentation" href="index.html" />
     <link rel="up" title="API Reference" href="api.html" />
-    <link rel="prev" title="API Reference" href="api.html" /> 
+    <link rel="prev" title="API Reference" href="api.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
   <body>
+  
+  
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -53,7 +59,7 @@
           <div class="body">
             
   <div class="section" id="module-RubyAction">
-<span id="eventdispatcher"></span><h1>EventDispatcher<a class="headerlink" href="#module-RubyAction" title="Permalink to this headline">¶</a></h1>
+<span id="rubyaction-eventdispatcher"></span><h1>RubyAction::EventDispatcher<a class="headerlink" href="#module-RubyAction" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="RubyAction::EventDispatcher">
 <em class="property">class </em><tt class="descclassname">RubyAction::</tt><tt class="descname">EventDispatcher</tt><a class="headerlink" href="#RubyAction::EventDispatcher" title="Permalink to this definition">¶</a></dt>
@@ -65,9 +71,10 @@ Event dispatching and event targets are the core part of the RubyAction event mo
 <p>Different event types (such as <tt class="xref rb rb-meth docutils literal"><span class="pre">Event.ENTER_FRAME</span></tt>, <tt class="xref rb rb-meth docutils literal"><span class="pre">Event.TOUCHES_BEGIN</span></tt> or <tt class="xref rb rb-meth docutils literal"><span class="pre">Event.MOUSE_DOWN</span></tt>) flow through the scene tree hierarchy differently.
 When a touch or mouse event occurs, RubyAction dispatches an event object into the event flow from the root of the scene tree.
 On the other hand, <tt class="xref rb rb-meth docutils literal"><span class="pre">Event.ENTER_FRAME</span></tt> event is dispatched to all <tt class="xref rb rb-meth docutils literal"><span class="pre">Sprite</span></tt> objects.</p>
-<div class="code ruby highlight-python"><pre>dispatcher = RubyAction::EventDispatcher.new
-dispatcher.on :event, { puts 'Event received' }
-dispatcher.dispatch :event</pre>
+<div class="highlight-ruby"><div class="highlight"><pre><span class="n">dispatcher</span> <span class="o">=</span> <span class="ss">RubyAction</span><span class="p">:</span><span class="ss">:EventDispatcher</span><span class="o">.</span><span class="n">new</span>
+<span class="n">dispatcher</span><span class="o">.</span><span class="n">on</span> <span class="ss">:event</span><span class="p">,</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s1">&#39;Event received&#39;</span> <span class="p">}</span>
+<span class="n">dispatcher</span><span class="o">.</span><span class="n">dispatch</span> <span class="ss">:event</span>
+</pre></div>
 </div>
 <p>If you want to define a class that dispatches events, you can inherit your class from EventDispatcher.</p>
 <dl class="classmethod">
@@ -77,7 +84,7 @@ dispatcher.dispatch :event</pre>
 <p>obj is the (local) object we want to create a stub for. Normally this is nil.
 uri is the URI of the remote object that this will be a stub for.</p>
 <dl class="docutils">
-<dt><em>Parameters:</em></dt>
+<dt><strong>Parameters:</strong></dt>
 <dd><ul class="first last simple">
 <li><strong>primeiro</strong> - iqweiuq qwetiqwte iqw asdsajhdgjhasg dhjsag dhjasg <tt class="docutils literal"><span class="pre">dhjasg</span></tt> hjdg <cite>asjhd</cite> _gjashg_ djasg djhgas jdg asjdg jasgd jas gdjasgjdh gasjhd gajsd gjas dgj</li>
 <li><strong>segundo</strong> - asjdas</li>
@@ -107,10 +114,14 @@ uri is the URI of the remote object that this will be a stub for.</p>
         </div>
       </div>
       <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="api.html"
-                        title="previous chapter">API Reference</a></p>
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="api.html">API Reference</a><ul>
+      <li>Previous: <a href="api.html" title="previous chapter">API Reference</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/event_dispatcher.txt"
@@ -133,25 +144,10 @@ uri is the URI of the remote object that this will be a stub for.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="rb-modindex.html" title="Ruby Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="api.html" title="API Reference"
-             >previous</a> |</li>
-        <li><a href="index.html">RubyAction 0.0.1 documentation</a> &raquo;</li>
-          <li><a href="api.html" >API Reference</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer">
-        &copy; Copyright 2013, Jairo Luiz.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
-    </div>
+  <div class="footer">
+    &copy; Copyright 2013, Jairo Luiz.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  
   </body>
 </html>
