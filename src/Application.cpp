@@ -7,6 +7,9 @@
 #include "Bitmap.hpp"
 #include "TextureRegion.hpp"
 #include "Stage.hpp"
+
+#include "physics/Physics.hpp"
+
 #include <iostream>
 #include <mruby.h>
 #include <mruby/value.h>
@@ -22,7 +25,7 @@ namespace RubyAction
     SDL_Event event;
     event.type = SDL_USEREVENT;
     event.user.code = RUN_GAME_LOOP;
-    event.user.data1 = &interval;
+    // event.user.data1 = &interval;
     SDL_PushEvent(&event);
     return interval;
   }
@@ -74,6 +77,9 @@ namespace RubyAction
     engine->bind(RubyAction::bindBitmap);
     engine->bind(RubyAction::bindTextureRegion);
     engine->bind(RubyAction::bindStage);
+
+    engine->bind(RubyAction::Physics::bind);
+
     if (!engine->load(filename)) return -1;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
@@ -86,7 +92,7 @@ namespace RubyAction
     window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    SDL_AddTimer(1000 / 60, timerUpdate, NULL);
+    SDL_AddTimer(16, timerUpdate, NULL); // 60 FPS???
 
     bool running = true;
     SDL_Event event;
@@ -98,7 +104,7 @@ namespace RubyAction
         case SDL_USEREVENT:
           if (event.user.code == RUN_GAME_LOOP)
           {
-            mrb_value delta = mrb_fixnum_value(*((Uint32*) event.user.data1));
+            mrb_value delta = mrb_float_value(engine->getState(), 0.016);//*((Uint32*) event.user.data1));
             Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
 
             SDL_RenderClear(renderer);
