@@ -58,7 +58,6 @@ namespace RubyAction
 
   RClass* RubyEngine::getClass(const char *name)
   {
-    RClass *module = mrb_class_get(mrb, "RubyAction");
     return mrb_class_get_under(mrb, module, name);
   }
 

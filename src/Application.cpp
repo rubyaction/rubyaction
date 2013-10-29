@@ -22,6 +22,7 @@ namespace RubyAction
     SDL_Event event;
     event.type = SDL_USEREVENT;
     event.user.code = RUN_GAME_LOOP;
+    event.user.data1 = &interval;
     SDL_PushEvent(&event);
     return interval;
   }
@@ -97,9 +98,13 @@ namespace RubyAction
         case SDL_USEREVENT:
           if (event.user.code == RUN_GAME_LOOP)
           {
+            mrb_value delta = mrb_fixnum_value(*((Uint32*) event.user.data1));
+            Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
+
             SDL_RenderClear(renderer);
             Stage::getInstance()->render(renderer);
             SDL_RenderPresent(renderer);
+
             engine->garbageCollect();
           }
           break;

@@ -49,7 +49,7 @@ namespace RubyAction
                       const SDL_Point *center,
                       const SDL_RendererFlip flip)
   {
-    if (!loaded()) load(renderer);
+    load(renderer);
     SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center, flip);
   }
 
