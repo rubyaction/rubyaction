@@ -113,7 +113,7 @@ namespace Physics
     MRB_SET_INSTANCE_TT(clazz, MRB_TT_DATA);
 
     mrb_define_method(mrb, clazz, "initialize", World_initialize, MRB_ARGS_ARG(2, 1));
-    mrb_define_method(mrb, clazz, "clear_forces", World_clearForces, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "clear_forces!", World_clearForces, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "gravity", World_getGravity, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "gravity=", World_setGravity, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "step", World_step, MRB_ARGS_REQ(3));
