@@ -10,12 +10,12 @@ namespace RubyAction
     : self(self),
       mrb(RubyEngine::getInstance()->getState())
   {
-    std::cout << "Created: " << this->inspect() << std::endl;
+    // std::cout << "Created: " << this->inspect() << std::endl;
   }
 
   RubyObject::~RubyObject()
   {
-    std::cout << "Destroyed: " << this->inspect() << std::endl;
+    // std::cout << "Destroyed: " << this->inspect() << std::endl;
   }
 
   mrb_value RubyObject::getProperty(const char *property)

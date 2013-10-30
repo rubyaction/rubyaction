@@ -14,11 +14,6 @@ namespace RubyAction
     return instance;
   }
 
-  void Stage::setSelf(mrb_value self)
-  {
-    this->self = self;
-  }
-
   void bindStage(mrb_state *mrb, RClass *module)
   {
     mrb_value stage = RubyEngine::getInstance()->newInstance("Sprite", 0, NULL);

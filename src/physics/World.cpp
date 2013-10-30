@@ -7,10 +7,11 @@ namespace RubyAction
 namespace Physics
 {
 
-  World::World(mrb_value self, int gravityx, int gravity, bool doSleep)
+  World::World(mrb_value self, int gravityx, int gravityy, bool doSleep)
     : EventDispatcher(self)
   {
-    this->world = new b2World(b2Vec2(gravityx, gravity));
+    b2Vec2 gravity(gravityx, gravityy);
+    this->world = new b2World(gravity);
     this->world->SetAllowSleeping(doSleep);
   }
 
@@ -22,6 +23,11 @@ namespace Physics
   void World::clearForces()
   {
     this->world->ClearForces();
+  }
+
+  Body* World::createBody(mrb_value hash)
+  {
+    return new Body(this->world, hash);
   }
 
   int* World::getGravity()
@@ -49,14 +55,12 @@ namespace Physics
 
   void World::BeginContact(b2Contact* contact)
   {
-    mrb_state *mrb = RubyEngine::getInstance()->getState();
     mrb_value data[] = { mrb_fixnum_value(1), mrb_fixnum_value(2) };
     this->dispatch(mrb_intern(mrb, "begin_contact"), data, 2);
   }
 
   void World::EndContact(b2Contact* contact)
   {
-    mrb_state *mrb = RubyEngine::getInstance()->getState();
     mrb_value data[] = { mrb_fixnum_value(1), mrb_fixnum_value(2) };
     this->dispatch(mrb_intern(mrb, "end_contact"), data, 2);
   }
@@ -79,13 +83,13 @@ namespace Physics
   static mrb_value World_initialize(mrb_state *mrb, mrb_value self)
   {
     mrb_int gravityx;
-    mrb_int gravityY;
+    mrb_int gravityy;
     mrb_bool doSleep;
-    int argc = mrb_get_args(mrb, "ii|b", &gravityx, &gravityY, &doSleep);
+    int argc = mrb_get_args(mrb, "ii|b", &gravityx, &gravityy, &doSleep);
 
     if (argc == 2) doSleep = true;
 
-    SET_INSTANCE(self, new World(self, gravityx, gravityY, doSleep));
+    SET_INSTANCE(self, new World(self, gravityx, gravityy, doSleep));
     return self;
   }
 
@@ -94,6 +98,15 @@ namespace Physics
     GET_INSTANCE(self, world, World)
     world->clearForces();
     return self;
+  }
+
+  static mrb_value World_createBody(mrb_state *mrb, mrb_value self)
+  {
+    mrb_value hash;
+    int argc = mrb_get_args(mrb, "H", &hash);
+
+    GET_INSTANCE(self, world, World)
+    return world->createBody(hash)->getSelf();
   }
 
   static mrb_value World_getGravity(mrb_state *mrb, mrb_value self)
@@ -148,6 +161,7 @@ namespace Physics
 
     mrb_define_method(mrb, clazz, "initialize", World_initialize, MRB_ARGS_ARG(2, 1));
     mrb_define_method(mrb, clazz, "clear_forces!", World_clearForces, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "create_body", World_createBody, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "gravity", World_getGravity, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "gravity=", World_setGravity, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "raycast", World_raycast, MRB_ARGS_REQ(4));

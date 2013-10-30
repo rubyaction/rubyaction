@@ -2,7 +2,8 @@
 #define __PHYSICS_WORLD__
 
 #include "EventDispatcher.hpp"
-#include <Box2D.h>
+#include "physics/Body.hpp"
+
 
 namespace RubyAction
 {
@@ -20,6 +21,7 @@ namespace Physics
     World(mrb_value, int, int, bool);
     virtual ~World();
     void clearForces();
+    Body* createBody(mrb_value);
     int* getGravity();
     void setGravity(int, int);
     void raycast(int, int, int, int, mrb_value);

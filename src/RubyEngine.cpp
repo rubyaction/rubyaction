@@ -61,13 +61,18 @@ namespace RubyAction
     return mrb_class_get_under(mrb, module, name);
   }
 
-  mrb_value RubyEngine::newInstance(const char *classname, int argc, mrb_value *argv)
+  mrb_value RubyEngine::newInstance(RClass* clazz, int argc, mrb_value *argv, bool callInit)
   {
     mrb_value object;
-    RBasic *basic = mrb_obj_alloc(mrb, MRB_TT_DATA, getClass(classname));
+    RBasic *basic = mrb_obj_alloc(mrb, MRB_TT_DATA, clazz);
     object = mrb_obj_value(basic);
-    mrb_obj_call_init(mrb, object, argc, argv);
+    if (callInit) mrb_obj_call_init(mrb, object, argc, argv);
     return object;
+  }
+
+  mrb_value RubyEngine::newInstance(const char *classname, int argc, mrb_value *argv, bool callInit)
+  {
+    return newInstance(getClass(classname), argc, argv, callInit);
   }
 
 }

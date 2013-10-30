@@ -11,9 +11,7 @@ namespace RubyAction
   private:
     static Stage *instance;
     Stage() : Sprite(mrb_nil_value()) {}
-
   public:
-  	void setSelf(mrb_value);
   	static Stage* getInstance();
   };
 

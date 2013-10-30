@@ -24,6 +24,8 @@ namespace RubyAction
     mrb_value getProperty(const char *);
     void setProperty(const char *, mrb_value);
     RubyObject* getObject(const char *);
+    void setSelf(mrb_value self) { this->self = self; };
+    mrb_value getSelf() { return self; };
   };
 
   struct mrb_ruby_object_type

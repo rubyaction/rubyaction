@@ -21,11 +21,12 @@ namespace RubyAction
     ~RubyEngine();
     static RubyEngine* getInstance();
     void bind(bind_func);
-    bool load(const char*);
+    bool load(const char *);
     void garbageCollect();
     mrb_state* getState();
     RClass* getClass(const char *);
-    mrb_value newInstance(const char *, int, mrb_value *);
+    mrb_value newInstance(RClass *, int, mrb_value *, bool = true);
+    mrb_value newInstance(const char *, int, mrb_value *, bool = true);
   };
 
 }

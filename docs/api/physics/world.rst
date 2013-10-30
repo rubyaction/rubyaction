@@ -20,7 +20,6 @@ World
       - **gravityy**: (number) the y component the gravity
       - **do_sleep**: (boolean, default = true) improve performance by not simulating inactive bodies
 
-
     **Example:**
 
     .. code-block:: ruby
@@ -32,7 +31,6 @@ World
 
     Call this after you are done with time steps to clear the forces. You normally call this after each call to :rb:meth:`World#step`,
     unless you are performing sub-steps. By default, forces will be automatically cleared, so you don't need to call this function.
-
 
     **Example:**
 
