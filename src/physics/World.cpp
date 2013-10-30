@@ -1,8 +1,6 @@
 #include "physics/World.hpp"
-#include "RubyEngine.hpp"
 #include <mruby/array.h>
-#include <mruby/class.h>
-#include <mruby/variable.h>
+
 
 namespace RubyAction
 {
