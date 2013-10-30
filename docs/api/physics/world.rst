@@ -69,6 +69,41 @@ World
       world.gravity = [0, 10] # inverse gravity
 
 
+  .. rb:method:: raycast(x1, y1, x2, y2, callback)
+
+    Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the starting point.
+    Callback block is called for each fixture found in the query and accepts 6 parameters:
+
+    1. the fixture hit by the ray
+    2. the x coordinate of the point of initial intersection
+    3. the y coordinate of the point of initial intersection
+    4. the x coordinate of the normal vector at the point of intersection
+    5. the y coordinate of the normal vector at the point of intersection
+    6. fraction
+
+    You control how the ray cast proceeds by returning a number:
+
+    - return no value or -1: ignore this fixture and continue
+    - return 0: terminate the ray cast
+    - return fraction: clip the ray to this point
+    - return 1: don't clip the ray and continue
+
+    **Parameters:**
+      - **x1**: (number) the x coordinate of the ray starting point
+      - **y1**: (number) the y coordinate of the ray starting point
+      - **x2**: (number) the x coordinate of the ray ending point
+      - **y2**: (number) the y coordinate of the ray ending point
+      - **callback**: (block) the callback block that processes the results
+
+    **Example:**
+
+    .. code-block:: ruby
+
+      world.raycast 0, 0, 50, 80 do |fixture, px, py, nx, ny, fraction|
+        ...
+      end
+
+
   .. rb:method:: step(time_step, velocity_iterations, position_iterations)
 
     Take a time step. This performs collision detection, integration, and constraint solution.

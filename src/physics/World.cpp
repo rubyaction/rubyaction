@@ -37,6 +37,13 @@ namespace Physics
     this->world->SetGravity(b2Vec2(gravityx, gravity));
   }
 
+  void World::raycast(int x1, int y1, int x2, int y2, mrb_value callback)
+  {
+    this->raycastCallback = callback;
+    this->world->RayCast(this, b2Vec2(x1, y1), b2Vec2(x2, y2));
+    this->raycastCallback = mrb_nil_value();
+  }
+
   void World::step(float timeStep, int velocityIterations, int positionIterations)
   {
     this->world->Step(timeStep, velocityIterations, positionIterations);
@@ -54,6 +61,21 @@ namespace Physics
     mrb_state *mrb = RubyEngine::getInstance()->getState();
     mrb_value data[] = { mrb_fixnum_value(1), mrb_fixnum_value(2) };
     this->dispatch(mrb_intern(mrb, "end_contact"), data, 2);
+  }
+
+  float32 World::ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+  {
+    int argc = 6;
+    mrb_value argv[] = {
+      mrb_fixnum_value(182), // TODO: pass fixture object
+      mrb_fixnum_value(point.x),
+      mrb_fixnum_value(point.y),
+      mrb_fixnum_value(normal.x),
+      mrb_fixnum_value(normal.y),
+      mrb_float_value(mrb, fraction)
+    };
+    mrb_value report = mrb_yield_argv(mrb, this->raycastCallback, argc, argv);
+    return mrb_float(report);
   }
 
   static mrb_value World_initialize(mrb_state *mrb, mrb_value self)
@@ -94,6 +116,20 @@ namespace Physics
     return self;
   }
 
+  static mrb_value World_raycast(mrb_state *mrb, mrb_value self)
+  {
+    mrb_int x1;
+    mrb_int y1;
+    mrb_int x2;
+    mrb_int y2;
+    mrb_value callback;
+    mrb_get_args(mrb, "iiii&", &x1, &y1, &x2, &y2, &callback);
+
+    GET_INSTANCE(self, world, World)
+    world->raycast(x1, y1, x2, y2, callback);
+    return self;
+  }
+
   static mrb_value World_step(mrb_state *mrb, mrb_value self)
   {
     mrb_float timeStep;
@@ -116,6 +152,7 @@ namespace Physics
     mrb_define_method(mrb, clazz, "clear_forces!", World_clearForces, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "gravity", World_getGravity, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "gravity=", World_setGravity, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "raycast", World_raycast, MRB_ARGS_REQ(4));
     mrb_define_method(mrb, clazz, "step", World_step, MRB_ARGS_REQ(3));
   }
 
