@@ -9,9 +9,11 @@ project(${project_name})
 
 set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/lib/include
   ${PROJECT_SOURCE_DIR}/lib/include/mruby
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_image
+  ${PROJECT_SOURCE_DIR}/lib/include/Box2D
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
@@ -29,6 +31,10 @@ set_property(TARGET sdl2 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/os
 # SDL2_image
 add_library(sdl2_image STATIC IMPORTED)
 set_property(TARGET sdl2_image PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2_image.a)
+
+# Box2D
+add_library(box2d STATIC IMPORTED)
+set_property(TARGET box2d PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libBox2D.a)
 
 # frameworks
 find_library(cocoa Cocoa)
@@ -48,6 +54,7 @@ set(${project_name}_libraries
   mruby
   sdl2
   sdl2_image
+  box2d
   ${cocoa}
   ${carbon}
   ${iokit}
