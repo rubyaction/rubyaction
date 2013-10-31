@@ -11,9 +11,10 @@ set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/lib/include
   ${PROJECT_SOURCE_DIR}/lib/include/mruby
+  ${PROJECT_SOURCE_DIR}/lib/include/Box2D
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_image
-  ${PROJECT_SOURCE_DIR}/lib/include/Box2D
+  ${PROJECT_SOURCE_DIR}/lib/include/SDL2_gfx
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
@@ -24,6 +25,10 @@ include_directories(${${project_name}_include})
 add_library(mruby STATIC IMPORTED)
 set_property(TARGET mruby PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libmruby.a)
 
+# Box2D
+add_library(box2d STATIC IMPORTED)
+set_property(TARGET box2d PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libBox2D.a)
+
 # SDL2
 add_library(sdl2 STATIC IMPORTED)
 set_property(TARGET sdl2 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2.a)
@@ -32,9 +37,9 @@ set_property(TARGET sdl2 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/os
 add_library(sdl2_image STATIC IMPORTED)
 set_property(TARGET sdl2_image PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2_image.a)
 
-# Box2D
-add_library(box2d STATIC IMPORTED)
-set_property(TARGET box2d PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libBox2D.a)
+# SDL2_gfx
+add_library(sdl2_gfx STATIC IMPORTED)
+set_property(TARGET sdl2_gfx PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2_gfx.a)
 
 # frameworks
 find_library(cocoa Cocoa)
@@ -52,9 +57,10 @@ find_library(iconv iconv)
 
 set(${project_name}_libraries
   mruby
+  box2d
   sdl2
   sdl2_image
-  box2d
+  sdl2_gfx
   ${cocoa}
   ${carbon}
   ${iokit}
