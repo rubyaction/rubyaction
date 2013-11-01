@@ -2,6 +2,7 @@
 #define __APPLICATION__
 
 #include <SDL.h>
+#include <SDL2_framerate.h>
 
 namespace RubyAction
 {
@@ -24,7 +25,7 @@ namespace RubyAction
       int width = 800;
       int height = 600;
       const char *title = "alpha";
-      int fps = 60;
+      int fps = FPS_UPPER_LIMIT;
     } config;
   };
 

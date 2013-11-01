@@ -1,6 +1,5 @@
 #include "Application.hpp"
 
-
 int main(int argc, const char **argv)
 {
   RubyAction::Application *app = RubyAction::Application::getInstance();
@@ -12,4 +11,3 @@ int main(int argc, const char **argv)
 
   return app->run((argc > 1) ? argv[1] : "main.rb");
 }
-

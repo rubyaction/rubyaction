@@ -7,28 +7,14 @@
 #include "Bitmap.hpp"
 #include "TextureRegion.hpp"
 #include "Stage.hpp"
-
 #include "physics/Physics.hpp"
 
-#include <iostream>
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/hash.h>
 
 namespace RubyAction
 {
-
-  static const int RUN_GAME_LOOP = 1;
-
-  Uint32 timerUpdate(Uint32 interval, void *param)
-  {
-    SDL_Event event;
-    event.type = SDL_USEREVENT;
-    event.user.code = RUN_GAME_LOOP;
-    // event.user.data1 = &interval;
-    SDL_PushEvent(&event);
-    return interval;
-  }
 
   void mouseMoveEvent(SDL_Event *event)
   {
@@ -82,8 +68,8 @@ namespace RubyAction
 
     if (!engine->load(filename)) return -1;
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
-      std::cout << SDL_GetError() << std::endl;
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+      LOG(SDL_GetError());
       return -1;
     }
 
@@ -92,34 +78,35 @@ namespace RubyAction
     window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    SDL_AddTimer(16, timerUpdate, NULL); // 60 FPS???
+    FPSmanager fps;
+    SDL_initFramerate(&fps);
+    SDL_setFramerate(&fps, config.fps);
 
     bool running = true;
     SDL_Event event;
 
-    while (running && SDL_WaitEvent(&event))
+    while (running)
     {
-      switch (event.type)
-      {
-        case SDL_USEREVENT:
-          if (event.user.code == RUN_GAME_LOOP)
-          {
-            mrb_value delta = mrb_float_value(engine->getState(), 0.016);//*((Uint32*) event.user.data1));
-            Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
-
-            SDL_RenderClear(renderer);
-            Stage::getInstance()->render(renderer);
-            SDL_RenderPresent(renderer);
-
-            engine->garbageCollect();
-          }
-          break;
-        case SDL_QUIT:
-          running = false;
-          break;
-        default:
-          processInputEvents(&event);
+      while(SDL_PollEvent(&event)) {
+        switch (event.type)
+        {
+          case SDL_QUIT:
+            running = false;
+            break;
+          default:
+            processInputEvents(&event);
+        }
       }
+
+      float delay = SDL_framerateDelay(&fps) / 1000.0;
+      mrb_value delta = mrb_float_value(engine->getState(), delay);
+      Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
+
+      SDL_RenderClear(renderer);
+      Stage::getInstance()->render(renderer);
+      SDL_RenderPresent(renderer);
+
+      engine->garbageCollect();
     }
 
     SDL_DestroyRenderer(renderer);
