@@ -3,6 +3,7 @@
 
 #include "EventDispatcher.hpp"
 #include "physics/Body.hpp"
+#include "physics/DebugDraw.hpp"
 
 
 namespace RubyAction
@@ -26,6 +27,7 @@ namespace Physics
     void setGravity(int, int);
     void raycast(int, int, int, int, mrb_value);
     void step(float, int, int);
+    void setDebugDraw(DebugDraw *);
 
     // Box2D callbacks
     // b2ContactListener

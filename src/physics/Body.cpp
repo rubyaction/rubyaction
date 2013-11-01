@@ -4,6 +4,7 @@
 
 
 #define GET_VALUE(key) mrb_hash_get(mrb, hash, mrb_symbol_value(mrb_intern(mrb, key)))
+#define GET_VALUE_DEF(key, def) mrb_hash_fetch(mrb, hash, mrb_symbol_value(mrb_intern(mrb, key)), def)
 
 namespace RubyAction
 {
@@ -19,17 +20,17 @@ namespace Physics
 
     b2BodyDef def;
 
-    mrb_value type = GET_VALUE("type");
+    mrb_value type = GET_VALUE_DEF("type", mrb_fixnum_value(b2_dynamicBody));
     switch(mrb_fixnum(type)) {
-      case 0: def.type = b2_staticBody;
-      case 1: def.type = b2_kinematicBody;
+      case 0: def.type = b2_staticBody; break;
+      case 1: def.type = b2_kinematicBody; break;
       case 2: def.type = b2_dynamicBody;
     }
 
     mrb_value position = GET_VALUE("position");
     if (!mrb_nil_p(position)) def.position.Set(
-      mrb_float(mrb_ary_ref(mrb, position, 0)),
-      mrb_float(mrb_ary_ref(mrb, position, 1))
+      mrb_fixnum(mrb_ary_ref(mrb, position, 0)),
+      mrb_fixnum(mrb_ary_ref(mrb, position, 1))
     );
 
     mrb_value angle = GET_VALUE("angle");
@@ -68,10 +69,28 @@ namespace Physics
     mrb_value gravityScale = GET_VALUE("gravity_scale");
     if (!mrb_nil_p(gravityScale)) def.gravityScale = mrb_float(gravityScale);
 
+
     this->body = world->CreateBody(&def);
+
+    // b2CircleShape circle;
+    // circle.m_radius = 60;
+    // this->body->CreateFixture(&circle, 1);
+
+    b2PolygonShape box;
+    box.SetAsBox(80, 40);
+    b2Fixture *fixture = this->body->CreateFixture(&box, 1);
+    fixture->SetRestitution(1.f);
+
+    def.type = b2_staticBody;
+    def.position.Set(297, 300);
+    this->body = world->CreateBody(&def);
+
+    box.SetAsBox(100, 10);
+    this->body->CreateFixture(&box, 1);
+
   }
 
-  static mrb_value World_initialize(mrb_state *mrb, mrb_value self)
+  static mrb_value Body_initialize(mrb_state *mrb, mrb_value self)
   {
     mrb_raise(mrb, E_RUNTIME_ERROR, "Wrong use of this class. Try RubyAction::Physics::World.create_body");
     return self;
@@ -82,7 +101,7 @@ namespace Physics
     struct RClass *clazz = mrb_define_class_under(mrb, physics, "Body", mrb->object_class);
     MRB_SET_INSTANCE_TT(clazz, MRB_TT_DATA);
 
-    mrb_define_method(mrb, clazz, "initialize", World_initialize, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "initialize", Body_initialize, MRB_ARGS_NONE());
 
     mrb_define_const(mrb, clazz, "STATIC_BODY", mrb_fixnum_value(0));
     mrb_define_const(mrb, clazz, "KINEMATIC_BODY", mrb_fixnum_value(1));

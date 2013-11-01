@@ -51,6 +51,12 @@ namespace Physics
   void World::step(float timeStep, int velocityIterations, int positionIterations)
   {
     this->world->Step(timeStep, velocityIterations, positionIterations);
+    this->world->DrawDebugData();
+  }
+
+  void World::setDebugDraw(DebugDraw *debugDraw)
+  {
+    this->world->SetDebugDraw(debugDraw);
   }
 
   void World::BeginContact(b2Contact* contact)
@@ -153,6 +159,18 @@ namespace Physics
     return self;
   }
 
+  static mrb_value World_setDebugDraw(mrb_state *mrb, mrb_value self)
+  {
+    mrb_value debug;
+    mrb_get_args(mrb, "o", &debug);
+
+    GET_INSTANCE(self, world, World)
+    GET_INSTANCE(debug, debugDraw, DebugDraw);
+
+    world->setDebugDraw(debugDraw);
+    return self;
+  }
+
   void bindWorld(mrb_state *mrb, RClass *module, RClass *physics)
   {
     struct RClass *super = mrb_class_get_under(mrb, module, "EventDispatcher");
@@ -166,6 +184,7 @@ namespace Physics
     mrb_define_method(mrb, clazz, "gravity=", World_setGravity, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "raycast", World_raycast, MRB_ARGS_REQ(4));
     mrb_define_method(mrb, clazz, "step", World_step, MRB_ARGS_REQ(3));
+    mrb_define_method(mrb, clazz, "debug_draw=", World_setDebugDraw, MRB_ARGS_REQ(1));
   }
 
 }

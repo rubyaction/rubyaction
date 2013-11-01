@@ -9,6 +9,9 @@
 #include <mruby/string.h>
 #include <mruby/variable.h>
 
+#include <iostream>
+#define LOG(text) std::cout << text << std::endl;
+
 namespace RubyAction
 {
 
