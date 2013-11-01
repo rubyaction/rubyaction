@@ -67,7 +67,7 @@ namespace Physics
   {
     this->funcs.push_back(
       [&, center, radius, color](SDL_Renderer* renderer) {
-        ellipseRGBA(renderer, center.x, center.y, radius, radius, 255*color.r, 255*color.g, 255*color.b, 255);
+        ellipseRGBA(renderer, center.x, 600 - center.y, radius, radius, 255*color.r, 255*color.g, 255*color.b, 255);
       }
     );
   }
@@ -76,7 +76,7 @@ namespace Physics
   {
     this->funcs.push_back(
       [&, center, radius, axis, color](SDL_Renderer* renderer) {
-        filledEllipseRGBA(renderer, center.x, center.y, radius, radius, 255*color.r, 255*color.g, 255*color.b, 255);
+        filledEllipseRGBA(renderer, center.x, 600 - center.y, radius, radius, 255*color.r, 255*color.g, 255*color.b, 255);
       }
     );
   }
