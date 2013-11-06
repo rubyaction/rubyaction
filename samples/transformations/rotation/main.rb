@@ -1,6 +1,10 @@
-texture = RubyAction::Texture.new "crate.png"
+# background
+background = RubyAction::Bitmap.new RubyAction::Texture.new "background.jpg"
+background.position = [400, 300]
+RubyAction::Stage << background
 
-crate = RubyAction::Bitmap.new texture
+# crate
+crate = RubyAction::Bitmap.new RubyAction::Texture.new "crate.png"
 crate.position = [400, 300]
 
 crate.on :enter_frame do |dt|
