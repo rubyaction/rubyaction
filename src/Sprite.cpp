@@ -19,6 +19,8 @@ namespace RubyAction
       height(0),
       scaleX(1),
       scaleY(1),
+      anchorX(0),
+      anchorY(0),
       rotation(0),
       visible(true)
   {
@@ -88,6 +90,26 @@ namespace RubyAction
     this->scaleY = scaleY;
   }
 
+  float Sprite::getAnchorX()
+  {
+    return anchorX;
+  }
+
+  void Sprite::setAnchorX(float anchorX)
+  {
+    this->anchorX = anchorX;
+  }
+
+  float Sprite::getAnchorY()
+  {
+    return anchorY;
+  }
+
+  void Sprite::setAnchorY(float anchorY)
+  {
+    this->anchorY = anchorY;
+  }
+
   float Sprite::getRotation()
   {
     return rotation;
@@ -115,7 +137,7 @@ namespace RubyAction
     glPushMatrix();
     glm::mat4 matrix = glm::mat4(1.0);
 
-    glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * scaleX / 2, -height * scaleY / 2, 0.0f));
+    glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * scaleX * anchorX, -height * scaleY * anchorY, 0.0f));
     glm::mat4 rotate = glm::rotate(matrix, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
     glm::mat4 scale = glm::scale(matrix, glm::vec3(scaleX, scaleY, 0));
@@ -332,6 +354,56 @@ namespace RubyAction
     return self;
   }
 
+  static mrb_value Sprite_getAnchorX(mrb_state *mrb, mrb_value self)
+  {
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_float_value(mrb, sprite->getAnchorX());
+  }
+
+  static mrb_value Sprite_setAnchorX(mrb_state *mrb, mrb_value self)
+  {
+    mrb_float anchorX;
+    mrb_get_args(mrb, "f", &anchorX);
+
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setAnchorX(anchorX);
+    return self;
+  }
+
+  static mrb_value Sprite_getAnchorY(mrb_state *mrb, mrb_value self)
+  {
+    GET_INSTANCE(self, sprite, Sprite)
+    return mrb_float_value(mrb, sprite->getAnchorY());
+  }
+
+  static mrb_value Sprite_setAnchorY(mrb_state *mrb, mrb_value self)
+  {
+    mrb_float anchorY;
+    mrb_get_args(mrb, "f", &anchorY);
+
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setAnchorY(anchorY);
+    return self;
+  }
+
+  static mrb_value Sprite_getAnchor(mrb_state *mrb, mrb_value self)
+  {
+    mrb_value anchor[2] = { Sprite_getAnchorX(mrb, self), Sprite_getAnchorY(mrb, self) };
+    return mrb_ary_new_from_values(mrb, 2, anchor);
+  }
+
+  static mrb_value Sprite_setAnchor(mrb_state *mrb, mrb_value self)
+  {
+    mrb_value anchor;
+    mrb_get_args(mrb, "A", &anchor);
+
+    GET_INSTANCE(self, sprite, Sprite)
+    sprite->setAnchorX(A_GET_FLOAT(anchor, 0));
+    sprite->setAnchorY(A_GET_FLOAT(anchor, 1));
+
+    return self;
+  }
+
   static mrb_value Sprite_getRotation(mrb_state *mrb, mrb_value self)
   {
     GET_INSTANCE(self, sprite, Sprite)
@@ -423,6 +495,12 @@ namespace RubyAction
     mrb_define_method(mrb, clazz, "scale_y=", Sprite_setScaleY, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "scale", Sprite_getScale, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "scale=", Sprite_setScale, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "anchor_x", Sprite_getAnchorX, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "anchor_x=", Sprite_setAnchorX, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "anchor_y", Sprite_getAnchorY, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "anchor_y=", Sprite_setAnchorY, MRB_ARGS_REQ(1));
+    mrb_define_method(mrb, clazz, "anchor", Sprite_getAnchor, MRB_ARGS_NONE());
+    mrb_define_method(mrb, clazz, "anchor=", Sprite_setAnchor, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "rotation", Sprite_getRotation, MRB_ARGS_NONE());
     mrb_define_method(mrb, clazz, "rotation=", Sprite_setRotation, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, clazz, "visible?", Sprite_isVisible, MRB_ARGS_NONE());

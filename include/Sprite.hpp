@@ -16,6 +16,8 @@ namespace RubyAction
     int height;
     float scaleX;
     float scaleY;
+    float anchorX;
+    float anchorY;
     float rotation;
     bool visible;
   protected:
@@ -34,6 +36,10 @@ namespace RubyAction
     void setScaleX(float);
     float getScaleY();
     void setScaleY(float);
+    float getAnchorY();
+    void setAnchorY(float);
+    float getAnchorX();
+    void setAnchorX(float);
     float getRotation();
     void setRotation(float);
     bool isVisible();
