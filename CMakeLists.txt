@@ -9,6 +9,7 @@ project(${project_name})
 
 set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/lib/include
   ${PROJECT_SOURCE_DIR}/lib/include/mruby
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_image

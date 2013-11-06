@@ -14,23 +14,15 @@ namespace RubyAction
     setHeight(region->getHeight());
   }
 
-  void Bitmap::render(SDL_Renderer *renderer)
+  void Bitmap::renderMe(SDL_Renderer *renderer)
   {
-    if (!isVisible()) return;
-
     TextureRegion *region = (TextureRegion*) this->getObject("texture_region");
     Texture *texture = (Texture*) region->getObject("texture");
 
     SDL_Rect srcrect = { region->getX(), region->getY(), region->getWidth(), region->getHeight() };
-    SDL_Rect dstrect = {
-      this->getX(),
-      this->getY(),
-      static_cast<int>(this->getWidth() * this->getScaleX()),
-      static_cast<int>(this->getHeight() * this->getScaleY())
-    };
+    SDL_Rect dstrect = { 0, 0, this->getWidth(), this->getHeight() };
 
-    texture->render(renderer, &srcrect, &dstrect, getRotation(), NULL, SDL_FLIP_NONE);
-    Sprite::render(renderer);
+    texture->render(renderer, &srcrect, &dstrect);
   }
 
   static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)

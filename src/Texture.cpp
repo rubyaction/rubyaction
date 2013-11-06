@@ -9,48 +9,29 @@ namespace RubyAction
   {
     surface = IMG_Load(filename);
 
-    SDL_Rect rect;
-    SDL_GetClipRect(surface, &rect);
-
-    this->width = rect.w;
-    this->height = rect.h;
+    this->width = surface->w;
+    this->height = surface->h;
     this->texture = NULL;
   }
 
   Texture::~Texture()
   {
-    unload();
-    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
   }
 
   void Texture::load(SDL_Renderer *renderer)
   {
-    if (loaded()) return;
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture)
+    {
+      texture = SDL_CreateTextureFromSurface(renderer, surface);
+      SDL_FreeSurface(surface);
+    }
   }
 
-  bool Texture::loaded()
-  {
-    if (texture) return true;
-    return false;
-  }
-
-  void Texture::unload()
-  {
-    if (!loaded()) return;
-    SDL_DestroyTexture(texture);
-    texture = NULL;
-  }
-
-  void Texture::render(SDL_Renderer *renderer,
-                      const SDL_Rect *srcrect,
-                      const SDL_Rect *dstrect,
-                      const double angle,
-                      const SDL_Point *center,
-                      const SDL_RendererFlip flip)
+  void Texture::render(SDL_Renderer *renderer, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
   {
     load(renderer);
-    SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center, flip);
+    SDL_RenderCopy(renderer, texture, srcrect, dstrect);
   }
 
   static mrb_value Texture_initialize(mrb_state *mrb, mrb_value self)

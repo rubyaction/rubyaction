@@ -8,9 +8,10 @@ namespace RubyAction
 
   class Bitmap : public Sprite
   {
+  protected:
+    virtual void renderMe(SDL_Renderer *);
   public:
-  	Bitmap(mrb_value, mrb_value);
-  	virtual void render(SDL_Renderer *);
+    Bitmap(mrb_value, mrb_value);
   };
 
   void bindBitmap(mrb_state*, RClass*);
