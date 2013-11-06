@@ -4,8 +4,10 @@ set(project_name action)
 
 project(${project_name})
 
-# set(CMAKE_OSX_ARCHITECTURES i386 CACHE STRING "do not build for 64-bit" FORCE)
-# set(ARCH i386)
+set(CMAKE_CXX_FLAGS "-std=c++0x -stdlib=libc++")
+
+set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "build for 64-bit only" FORCE)
+set(ARCH x86_64)
 
 set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/include
@@ -75,6 +77,5 @@ set(${project_name}_libraries
   ${iconv}
 )
 
-add_definitions(-std=c++11)
 add_executable(${project_name} ${${project_name}_sources})
 target_link_libraries(${project_name} ${${project_name}_libraries})
