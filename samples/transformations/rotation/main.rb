@@ -1,14 +1,16 @@
 # background
 background = RubyAction::Bitmap.new RubyAction::Texture.new "background.jpg"
-background.position = [400, 300]
 RubyAction::Stage << background
 
-# crate
-crate = RubyAction::Bitmap.new RubyAction::Texture.new "crate.png"
-crate.position = [400, 300]
+# texture
+texture = RubyAction::Texture.new "crate.png"
 
-crate.on :enter_frame do |dt|
+# crate
+crate = RubyAction::Bitmap.new texture
+crate.position = [400, 300]
+crate.anchor = [0.5, 0.5]
+RubyAction::Stage << crate
+
+RubyAction::Stage.on :enter_frame do |dt|
   crate.rotation += dt * 100
 end
-
-RubyAction::Stage << crate
