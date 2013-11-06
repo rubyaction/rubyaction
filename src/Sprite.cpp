@@ -1,4 +1,5 @@
 #include "Sprite.hpp"
+#include "util/array.hpp"
 #include <mruby/array.h>
 #include <mruby/class.h>
 #include <mruby/variable.h>
@@ -114,7 +115,7 @@ namespace RubyAction
     glPushMatrix();
     glm::mat4 matrix = glm::mat4(1.0);
 
-    glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width / 2, -height / 2, 0.0f));
+    glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * scaleX / 2, -height * scaleY / 2, 0.0f));
     glm::mat4 rotate = glm::rotate(matrix, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
     glm::mat4 scale = glm::scale(matrix, glm::vec3(scaleX, scaleY, 0));
@@ -225,8 +226,9 @@ namespace RubyAction
     mrb_get_args(mrb, "A", &position);
 
     GET_INSTANCE(self, sprite, Sprite)
-    sprite->setX(mrb_fixnum(mrb_ary_ref(mrb, position, 0)));
-    sprite->setY(mrb_fixnum(mrb_ary_ref(mrb, position, 1)));
+    sprite->setX(A_GET_INT(position, 0));
+    sprite->setY(A_GET_INT(position, 1));
+
     return self;
   }
 
@@ -274,8 +276,9 @@ namespace RubyAction
     mrb_get_args(mrb, "A", &size);
 
     GET_INSTANCE(self, sprite, Sprite)
-    sprite->setWidth(mrb_fixnum(mrb_ary_ref(mrb, size, 0)));
-    sprite->setHeight(mrb_fixnum(mrb_ary_ref(mrb, size, 1)));
+    sprite->setWidth(A_GET_INT(size, 0));
+    sprite->setHeight(A_GET_INT(size, 1));
+
     return self;
   }
 
@@ -323,8 +326,9 @@ namespace RubyAction
     mrb_get_args(mrb, "A", &scale);
 
     GET_INSTANCE(self, sprite, Sprite)
-    sprite->setScaleX(mrb_float(mrb_ary_ref(mrb, scale, 0)));
-    sprite->setScaleY(mrb_float(mrb_ary_ref(mrb, scale, 1)));
+    sprite->setScaleX(A_GET_FLOAT(scale, 0));
+    sprite->setScaleY(A_GET_FLOAT(scale, 1));
+
     return self;
   }
 

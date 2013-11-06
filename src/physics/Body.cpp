@@ -1,10 +1,8 @@
 #include "physics/Body.hpp"
+#include "util/array.hpp"
+#include "util/hash.hpp"
 #include <mruby/hash.h>
 #include <mruby/array.h>
-
-
-#define GET_VALUE(key) mrb_hash_get(mrb, hash, mrb_symbol_value(mrb_intern(mrb, key)))
-#define GET_VALUE_DEF(key, def) mrb_hash_fetch(mrb, hash, mrb_symbol_value(mrb_intern(mrb, key)), def)
 
 namespace RubyAction
 {
@@ -20,55 +18,54 @@ namespace Physics
 
     b2BodyDef def;
 
-    mrb_value type = GET_VALUE_DEF("type", mrb_fixnum_value(b2_dynamicBody));
+    mrb_value type = H_GET_VALUE_DEF(hash, "type", mrb_fixnum_value(b2_dynamicBody));
     switch(mrb_fixnum(type)) {
       case 0: def.type = b2_staticBody; break;
       case 1: def.type = b2_kinematicBody; break;
       case 2: def.type = b2_dynamicBody;
     }
 
-    mrb_value position = GET_VALUE("position");
+    mrb_value position = H_GET_VALUE(hash, "position");
     if (!mrb_nil_p(position)) def.position.Set(
-      mrb_fixnum(mrb_ary_ref(mrb, position, 0)),
-      mrb_fixnum(mrb_ary_ref(mrb, position, 1))
+      A_GET_FLOAT(position, 0),
+      A_GET_FLOAT(position, 1)
     );
 
-    mrb_value angle = GET_VALUE("angle");
-    if (!mrb_nil_p(angle)) def.angle = mrb_float(angle);
+    mrb_value angle = H_GET_VALUE(hash, "angle");
+    if (!mrb_nil_p(angle)) def.angle = TO_FLOAT(angle);
 
-    mrb_value linearVelocity = GET_VALUE("linear_velocity");
+    mrb_value linearVelocity = H_GET_VALUE(hash, "linear_velocity");
     if (!mrb_nil_p(linearVelocity)) def.linearVelocity.Set(
-      mrb_float(mrb_ary_ref(mrb, linearVelocity, 0)),
-      mrb_float(mrb_ary_ref(mrb, linearVelocity, 1))
+      A_GET_FLOAT(linearVelocity, 0),
+      A_GET_FLOAT(linearVelocity, 1)
     );
 
-    mrb_value angularVelocity = GET_VALUE("angular_velocity");
-    if (!mrb_nil_p(angularVelocity)) def.angularVelocity = mrb_float(angularVelocity);
+    mrb_value angularVelocity = H_GET_VALUE(hash, "angular_velocity");
+    if (!mrb_nil_p(angularVelocity)) def.angularVelocity = TO_FLOAT(angularVelocity);
 
-    mrb_value linearDamping = GET_VALUE("linear_damping");
-    if (!mrb_nil_p(linearDamping)) def.linearDamping = mrb_float(linearDamping);
+    mrb_value linearDamping = H_GET_VALUE(hash, "linear_damping");
+    if (!mrb_nil_p(linearDamping)) def.linearDamping = TO_FLOAT(linearDamping);
 
-    mrb_value angularDamping = GET_VALUE("angular_damping");
-    if (!mrb_nil_p(angularDamping)) def.angularDamping = mrb_float(angularDamping);
+    mrb_value angularDamping = H_GET_VALUE(hash, "angular_damping");
+    if (!mrb_nil_p(angularDamping)) def.angularDamping = TO_FLOAT(angularDamping);
 
-    mrb_value allowSleep = GET_VALUE("allow_sleep");
+    mrb_value allowSleep = H_GET_VALUE(hash, "allow_sleep");
     if (!mrb_nil_p(allowSleep)) def.allowSleep = mrb_bool(allowSleep);
 
-    mrb_value awake = GET_VALUE("awake");
+    mrb_value awake = H_GET_VALUE(hash, "awake");
     if (!mrb_nil_p(awake)) def.awake = mrb_bool(awake);
 
-    mrb_value fixedRotation = GET_VALUE("fixed_rotation");
+    mrb_value fixedRotation = H_GET_VALUE(hash, "fixed_rotation");
     if (!mrb_nil_p(fixedRotation)) def.fixedRotation = mrb_bool(fixedRotation);
 
-    mrb_value bullet = GET_VALUE("bullet");
+    mrb_value bullet = H_GET_VALUE(hash, "bullet");
     if (!mrb_nil_p(bullet)) def.bullet = mrb_bool(bullet);
 
-    mrb_value active = GET_VALUE("active");
+    mrb_value active = H_GET_VALUE(hash, "active");
     if (!mrb_nil_p(active)) def.active = mrb_bool(active);
 
-    mrb_value gravityScale = GET_VALUE("gravity_scale");
-    if (!mrb_nil_p(gravityScale)) def.gravityScale = mrb_float(gravityScale);
-
+    mrb_value gravityScale = H_GET_VALUE(hash, "gravity_scale");
+    if (!mrb_nil_p(gravityScale)) def.gravityScale = TO_FLOAT(gravityScale);
 
     this->body = world->CreateBody(&def);
 
@@ -76,17 +73,17 @@ namespace Physics
     // circle.m_radius = 60;
     // this->body->CreateFixture(&circle, 1);
 
-    b2PolygonShape box;
-    box.SetAsBox(80, 40);
-    b2Fixture *fixture = this->body->CreateFixture(&box, 1);
-    fixture->SetRestitution(1.f);
+    // b2PolygonShape box;
+    // box.SetAsBox(80, 40);
+    // b2Fixture *fixture = this->body->CreateFixture(&box, 1);
+    // fixture->SetRestitution(1.f);
 
-    def.type = b2_staticBody;
-    def.position.Set(297, 300);
-    this->body = world->CreateBody(&def);
+    // def.type = b2_staticBody;
+    // def.position.Set(297, 300);
+    // this->body = world->CreateBody(&def);
 
-    box.SetAsBox(100, 10);
-    this->body->CreateFixture(&box, 1);
+    // box.SetAsBox(100, 10);
+    // this->body->CreateFixture(&box, 1);
 
   }
 
