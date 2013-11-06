@@ -18,6 +18,8 @@ namespace RubyAction
     float scaleY;
     float rotation;
     bool visible;
+  protected:
+    virtual void renderMe(SDL_Renderer *) {};
   public:
     Sprite(mrb_value);
     int getX();

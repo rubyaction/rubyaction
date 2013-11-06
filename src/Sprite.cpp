@@ -2,6 +2,10 @@
 #include <mruby/array.h>
 #include <mruby/class.h>
 #include <mruby/variable.h>
+#include <SDL_opengl.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace RubyAction
 {
@@ -105,14 +109,30 @@ namespace RubyAction
 
   void Sprite::render(SDL_Renderer *renderer)
   {
-    mrb_value children = getProperty("children");
+    if (!isVisible()) return;
 
+    glPushMatrix();
+    glm::mat4 matrix = glm::mat4(1.0);
+
+    glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width / 2, -height / 2, 0.0f));
+    glm::mat4 rotate = glm::rotate(matrix, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
+    glm::mat4 scale = glm::scale(matrix, glm::vec3(scaleX, scaleY, 0));
+
+    glm::mat4 model = translate * (rotate * anchor) * scale;
+    glMultMatrixf(glm::value_ptr(model));
+
+    this->renderMe(renderer);
+
+    mrb_value children = getProperty("children");
     for (int i = 0; i < RARRAY_LEN(children); i++)
     {
       mrb_value child = mrb_ary_ref(mrb, children, i);
       GET_INSTANCE(child, sprite, Sprite)
       sprite->render(renderer);
     }
+
+    glPopMatrix();
   }
 
   void Sprite::addChild(mrb_value child)

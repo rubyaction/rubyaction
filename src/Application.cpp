@@ -76,7 +76,7 @@ namespace RubyAction
     int x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, width = config.width, height = config.height;
 
     window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     FPSmanager fps;
     SDL_initFramerate(&fps);
