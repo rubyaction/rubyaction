@@ -17,6 +17,8 @@ namespace RubyAction
     TextField(mrb_value, mrb_value, const char *);
     void setColor(SDL_Color);
     SDL_Color getColor();
+    void setText(const char *);
+    const char * getText();
   };
 
   void bindTextField(mrb_state*, RClass*);
