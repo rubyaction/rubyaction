@@ -8,6 +8,10 @@
 #include "Bitmap.hpp"
 #include "TextureRegion.hpp"
 #include "Stage.hpp"
+#include "BaseFont.hpp"
+#include "Font.hpp"
+#include "TTFont.hpp"
+#include "TextField.hpp"
 #include "physics/Physics.hpp"
 
 #include <sstream>
@@ -71,12 +75,17 @@ int Application::run(const char *filename)
   engine->bind(RubyAction::bindBitmap);
   engine->bind(RubyAction::bindTextureRegion);
   engine->bind(RubyAction::bindStage);
+  engine->bind(RubyAction::bindBaseFont);
+  engine->bind(RubyAction::bindFont);
+  engine->bind(RubyAction::bindTTFont);
+  engine->bind(RubyAction::bindTextField);
 
   engine->bind(RubyAction::Physics::bind);
 
   if (!engine->load(filename)) return -1;
 
-  if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+  if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+  {
     LOG(SDL_GetError());
     return -1;
   }

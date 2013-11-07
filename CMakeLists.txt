@@ -17,6 +17,7 @@ set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_image
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_gfx
+  ${PROJECT_SOURCE_DIR}/lib/include/SDL2_ttf
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
@@ -31,6 +32,22 @@ set_property(TARGET mruby PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/o
 add_library(box2d STATIC IMPORTED)
 set_property(TARGET box2d PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libBox2D.a)
 
+# FreeType
+add_library(freetype STATIC IMPORTED)
+set_property(TARGET freetype PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libfreetype.a)
+
+# BZip2
+add_library(bzip STATIC IMPORTED)
+set_property(TARGET bzip PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libbz2.a)
+
+# ZLib
+add_library(zlib STATIC IMPORTED)
+set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libz.a)
+
+# libPNG
+add_library(png STATIC IMPORTED)
+set_property(TARGET png PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libpng.a)
+
 # SDL2
 add_library(sdl2 STATIC IMPORTED)
 set_property(TARGET sdl2 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2.a)
@@ -42,6 +59,10 @@ set_property(TARGET sdl2_image PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/
 # SDL2_gfx
 add_library(sdl2_gfx STATIC IMPORTED)
 set_property(TARGET sdl2_gfx PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2_gfx.a)
+
+# SDL2_ttf
+add_library(sdl2_ttf STATIC IMPORTED)
+set_property(TARGET sdl2_ttf PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2_ttf.a)
 
 # frameworks
 find_library(cocoa Cocoa)
@@ -60,9 +81,14 @@ find_library(iconv iconv)
 set(${project_name}_libraries
   mruby
   box2d
+  freetype
+  bzip
+  zlib
+  png
   sdl2
   sdl2_image
   sdl2_gfx
+  sdl2_ttf
   ${cocoa}
   ${carbon}
   ${iokit}
