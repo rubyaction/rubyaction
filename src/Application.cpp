@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include "FPSManager.hpp"
 #include "RubyEngine.hpp"
 #include "EventDispatcher.hpp"
 #include "TextureBase.hpp"
@@ -9,6 +10,7 @@
 #include "Stage.hpp"
 #include "physics/Physics.hpp"
 
+#include <sstream>
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/hash.h>
@@ -78,9 +80,7 @@ namespace RubyAction
     window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    FPSmanager fps;
-    SDL_initFramerate(&fps);
-    SDL_setFramerate(&fps, config.fps);
+    FPSManager fps(config.fps);
 
     bool running = true;
     SDL_Event event;
@@ -98,8 +98,7 @@ namespace RubyAction
         }
       }
 
-      float delay = SDL_framerateDelay(&fps) / 1000.0;
-      mrb_value delta = mrb_float_value(engine->getState(), delay);
+      mrb_value delta = mrb_float_value(engine->getState(), fps.step());
       Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
 
       SDL_RenderClear(renderer);
@@ -107,6 +106,10 @@ namespace RubyAction
       SDL_RenderPresent(renderer);
 
       engine->garbageCollect();
+
+      std::stringstream newTitle;
+      newTitle << config.title << " | FPS: " << fps.getAverageFPS();
+      SDL_SetWindowTitle(window, newTitle.str().c_str());
     }
 
     SDL_DestroyRenderer(renderer);
