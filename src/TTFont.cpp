@@ -24,6 +24,7 @@ TTFont::~TTFont()
   for (iterator = glyphs.begin(); iterator != glyphs.end(); iterator++)
   {
     SDL_DestroyTexture(iterator->second->texture);
+    delete iterator->second;
   }
 }
 
@@ -97,5 +98,5 @@ void RubyAction::bindTTFont(mrb_state *mrb, RClass *module)
   struct RClass *clazz = mrb_define_class_under(mrb, module, "TTFont", super);
   MRB_SET_INSTANCE_TT(clazz, MRB_TT_DATA);
 
-  mrb_define_method(mrb, clazz, "initialize", TTFont_initialize, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "initialize", TTFont_initialize, MRB_ARGS_REQ(2));
 }
