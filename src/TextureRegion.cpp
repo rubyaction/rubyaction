@@ -63,8 +63,8 @@ namespace RubyAction
 
     if (argc < 2) x = 0;
     if (argc < 3) y = 0;
-    if (argc < 4) width = texture->getWidth();
-    if (argc < 5) height = texture->getHeight();
+    if (argc < 4) width = texture->getWidth() - x;
+    if (argc < 5) height = texture->getHeight() - y;
 
     SET_INSTANCE(self, new TextureRegion(self, x, y, width, height))
     return self;
