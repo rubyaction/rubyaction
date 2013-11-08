@@ -2,6 +2,7 @@
 #define __TEXT_FIELD__
 
 #include "Sprite.hpp"
+#include <string>
 
 namespace RubyAction
 {
@@ -9,7 +10,7 @@ namespace RubyAction
   class TextField : public Sprite
   {
   private:
-    const char *text;
+    std::string text;
     SDL_Color color;
   protected:
     virtual void renderMe(SDL_Renderer *);

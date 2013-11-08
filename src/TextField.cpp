@@ -16,7 +16,7 @@ void TextField::renderMe(SDL_Renderer *renderer)
 {
   BaseFont *font = (BaseFont*) this->getObject("font");
   SDL_Rect dstrect = { 0, 0, this->getWidth(), this->getHeight() };
-  font->render(renderer, &dstrect, text, color);
+  font->render(renderer, &dstrect, this->getText(), color);
 }
 
 void TextField::setColor(SDL_Color color)
@@ -31,12 +31,12 @@ SDL_Color TextField::getColor()
 
 void TextField::setText(const char *text)
 {
-  this->text = text;
+  this->text = std::string(text);
 }
 
 const char * TextField::getText()
 {
-  return text;
+  return text.c_str();
 }
 
 static mrb_value TextField_initialize(mrb_state *mrb, mrb_value self)
