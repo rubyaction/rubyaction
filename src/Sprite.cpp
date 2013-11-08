@@ -129,6 +129,16 @@ void Sprite::setVisible(bool visible)
   this->visible = visible;
 }
 
+Sprite* Sprite::getParent()
+{
+  return mrb_nil_p(getProperty("parent")) ? NULL : (Sprite*) getObject("parent");
+}
+
+void Sprite::setParent(Sprite *parent)
+{
+  setProperty("parent", parent ? parent->getSelf() : mrb_nil_value());
+}
+
 void Sprite::render(SDL_Renderer *renderer)
 {
   if (!isVisible()) return;
@@ -168,6 +178,9 @@ void Sprite::addChild(mrb_value child)
   }
 
   mrb_ary_push(mrb, children, child);
+  GET_INSTANCE(child, childSprite, Sprite)
+  childSprite->removeFromParent();
+  childSprite->setParent(this);
 }
 
 void Sprite::removeChild(mrb_value child)
@@ -182,6 +195,14 @@ void Sprite::removeChild(mrb_value child)
   }
 
   setProperty("children", children);
+  GET_INSTANCE(child, childSprite, Sprite)
+  childSprite->setParent(NULL);
+}
+
+void Sprite::removeFromParent()
+{
+  Sprite *parent = this->getParent();
+  if (parent) parent->removeChild(this->getSelf());
 }
 
 void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
@@ -435,6 +456,13 @@ static mrb_value Sprite_setVisible(mrb_state *mrb, mrb_value self)
   return self;
 }
 
+static mrb_value Sprite_getParent(mrb_state *mrb, mrb_value self)
+{
+  GET_INSTANCE(self, sprite, Sprite)
+  Sprite *parent = sprite->getParent();
+  return parent ? parent->getSelf() : mrb_nil_value();
+}
+
 static mrb_value Sprite_addChild(mrb_state *mrb, mrb_value self)
 {
   mrb_value child;
@@ -504,6 +532,7 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "rotation=", Sprite_setRotation, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "visible?", Sprite_isVisible, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "visible=", Sprite_setVisible, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "parent", Sprite_getParent, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "add_child", Sprite_addChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
 
