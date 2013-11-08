@@ -7,8 +7,6 @@ using namespace RubyAction;
 TTFont::TTFont(mrb_value self, const char *filename, int size)
   : BaseFont(self)
 {
-  if (!TTF_WasInit() && TTF_Init() < 0) mrb_raise(mrb, E_RUNTIME_ERROR, TTF_GetError());
-
   font = TTF_OpenFont(filename, size);
   if (!font) {
     std::stringstream message;

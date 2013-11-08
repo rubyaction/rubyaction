@@ -18,6 +18,8 @@
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/hash.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 
 using namespace RubyAction;
 
@@ -67,6 +69,30 @@ Application* Application::getInstance()
 
 int Application::run(const char *filename)
 {
+  if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+  {
+    LOG(SDL_GetError());
+    return -1;
+  }
+
+  if (TTF_Init() < 0)
+  {
+    LOG(SDL_GetError());
+    return -1;
+  }
+
+  int flags = IMG_INIT_JPG | IMG_INIT_PNG;
+  int initted = IMG_Init(flags);
+  if ((initted & flags) != flags)
+  {
+    LOG(IMG_GetError());
+    return -1;
+  }
+
+  int x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, width = config.width, height = config.height;
+  window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
+  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
   RubyAction::RubyEngine *engine = RubyAction::RubyEngine::getInstance();
   engine->bind(RubyAction::bindEventDispatcher);
   engine->bind(RubyAction::bindTextureBase);
@@ -79,21 +105,9 @@ int Application::run(const char *filename)
   engine->bind(RubyAction::bindFont);
   engine->bind(RubyAction::bindTTFont);
   engine->bind(RubyAction::bindTextField);
-
   engine->bind(RubyAction::Physics::bind);
 
   if (!engine->load(filename)) return -1;
-
-  if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-  {
-    LOG(SDL_GetError());
-    return -1;
-  }
-
-  int x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, width = config.width, height = config.height;
-
-  window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
-  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
   FPSManager fps(config.fps);
 
@@ -129,6 +143,10 @@ int Application::run(const char *filename)
 
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
+
+  IMG_Quit();
+  TTF_Quit();
+  SDL_Quit();
 
   return 0;
 }
