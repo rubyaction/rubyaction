@@ -32,25 +32,19 @@ void TTFont::render(SDL_Renderer *renderer, const SDL_Rect *dstrect, const char 
 {
   int x = dstrect->x;
   int y = dstrect->y;
-
-  int w, h;
-  TTF_SizeUTF8(font, text, &w, &h);
-  float wr = dstrect->w / (float) w;
-  float hr = dstrect->h / (float) h;
-
-  float ascent = TTF_FontAscent(font) * wr;
+  int width, height;
+  TTF_SizeUTF8(font, text, &width, &height);
+  float wr = dstrect->w / (float) width;
+  float hr = dstrect->h / (float) height;
 
   for (int i = 0; i < strlen(text); i++)
   {
     char ch = text[i];
     Glyph *glyph = this->getGlyph(renderer, ch);
 
-    SDL_Rect rect = {
-      (int) (x + glyph->minx * wr),
-      (int) (y + ascent - glyph->maxy * hr),
-      (int) (glyph->w * wr),
-      (int) (glyph->h * hr)
-    };
+    int w = glyph->w * wr;
+    int h = glyph->h * hr;
+    SDL_Rect rect = { x, y, w, h };
 
     SDL_SetTextureColorMod(glyph->texture, color.r, color.g, color.b);
     SDL_SetTextureAlphaMod(glyph->texture, color.a);
@@ -73,7 +67,7 @@ TTFont::Glyph * TTFont::getGlyph(SDL_Renderer *renderer, char ch)
     glyph->h = surface->h;
     glyph->texture = texture;
 
-    TTF_GlyphMetrics(font, ch, &(glyph->minx), NULL, NULL, &(glyph->maxy), &(glyph->advance));
+    TTF_GlyphMetrics(font, ch, NULL, NULL, NULL, NULL, &(glyph->advance));
 
     glyphs[ch] = glyph;
     SDL_FreeSurface(surface);

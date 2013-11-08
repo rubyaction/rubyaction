@@ -12,7 +12,7 @@ namespace RubyAction
   {
   private:
     struct Glyph {
-      int w, h, minx, maxy, advance;
+      int w, h, advance;
       SDL_Texture *texture;
     };
 
