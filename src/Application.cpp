@@ -44,6 +44,13 @@ void mouseButtonEvent(SDL_Event *event, const char *name)
   Stage::getInstance()->dispatch(mrb_intern(mrb, name), data, 3);
 }
 
+void keyEvent(SDL_Event *event, const char *name)
+{
+  mrb_state *mrb = RubyEngine::getInstance()->getState();
+  mrb_value data = mrb_fixnum_value(event->key.keysym.sym);
+  Stage::getInstance()->dispatch(mrb_intern(mrb, name), &data, 1);
+}
+
 void processInputEvents(SDL_Event *event)
 {
   switch (event->type)
@@ -56,6 +63,12 @@ void processInputEvents(SDL_Event *event)
       break;
     case SDL_MOUSEBUTTONUP:
       mouseButtonEvent(event, "mouse_up");
+      break;
+    case SDL_KEYDOWN:
+      keyEvent(event, "key_down");
+      break;
+    case SDL_KEYUP:
+      keyEvent(event, "key_up");
       break;
   }
 }
