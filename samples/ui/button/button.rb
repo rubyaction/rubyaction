@@ -24,12 +24,12 @@
 
 class Button < RubyAction::Sprite
 
-  def initialize up_state, down_state
+  def initialize up, down
     super
-    self.size = up_state.size
+    self.size = up.size
 
-    @up_state = up_state
-    @down_state = down_state
+    @up = up
+    @down = down
 
     @focus = false
 
@@ -42,11 +42,11 @@ class Button < RubyAction::Sprite
 
   def update_visual_state down
     if down then
-      remove_child(@up_state) if contains?(@up_state)
-      add_child(@down_state) unless contains?(@down_state)
+      remove_child @up
+      add_child @down
     else
-      remove_child(@down_state) if contains?(@down_state)
-      add_child(@up_state) unless contains?(@up_state)
+      remove_child @down
+      add_child @up
     end
   end
 
