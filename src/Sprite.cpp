@@ -205,13 +205,38 @@ void Sprite::removeFromParent()
   if (parent) parent->removeChild(this->getSelf());
 }
 
+SDL_Point Sprite::globalToLocal(SDL_Point global)
+{
+  Sprite *parent = this->getParent();
+  if (parent) global = parent->globalToLocal(global);
+
+  glm::mat4 matrix = glm::mat4(1.0);
+  glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * anchorX, -height * anchorY, 0.0f));
+  glm::mat4 rotate = glm::rotate(matrix, -rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+  glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
+  glm::mat4 model = translate * (rotate * anchor);
+
+  glm::vec4 point = model * glm::vec4(global.x, global.y, 1, 1);
+  glm::vec4 position = model * glm::vec4(x, y, 1, 1);
+
+  return {
+    (int) ((point.x - position.x + width * anchorX * scaleX) / scaleX),
+    (int) ((point.y - position.y + height * anchorY * scaleY) / scaleY)
+  };
+}
+
+bool Sprite::collide(int x, int y)
+{
+  return (x >= 0) && (x <= this->width) && (y >= 0) && (y <= this->height);
+}
+
 void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
 {
   mrb_value children = getProperty("children");
 
   for (int i = 0; i < RARRAY_LEN(children); i++)
   {
-    GET_INSTANCE(mrb_ary_ref(mrb, children, i), child, Sprite)
+    A_GET_TYPE(children, i, child, Sprite)
     child->dispatch(name, argv, argc);
   }
 
@@ -497,6 +522,29 @@ static mrb_value Sprite_removeChild(mrb_state *mrb, mrb_value self)
   return self;
 }
 
+static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
+{
+  mrb_int x;
+  mrb_int y;
+  mrb_get_args(mrb, "ii", &x, &y);
+
+  GET_INSTANCE(self, sprite, Sprite)
+  SDL_Point p = sprite->globalToLocal({ x, y });
+
+  mrb_value point[2] = { mrb_fixnum_value(p.x), mrb_fixnum_value(p.y) };
+  return mrb_ary_new_from_values(mrb, 2, point);
+}
+
+static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
+{
+  mrb_int x;
+  mrb_int y;
+  mrb_get_args(mrb, "ii", &x, &y);
+
+  GET_INSTANCE(self, sprite, Sprite)
+  return mrb_bool_value(sprite->collide(x, y));
+}
+
 void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
 {
   struct RClass *super = mrb_class_get_under(mrb, module, "EventDispatcher");
@@ -535,6 +583,8 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "parent", Sprite_getParent, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "add_child", Sprite_addChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
 
   // alias
   mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add_child"));

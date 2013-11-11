@@ -46,9 +46,11 @@ namespace RubyAction
     void setVisible(bool);
     Sprite* getParent();
     void setParent(Sprite*);
-    virtual void addChild(mrb_value);
-    virtual void removeChild(mrb_value);
-    virtual void removeFromParent();
+    void addChild(mrb_value);
+    void removeChild(mrb_value);
+    void removeFromParent();
+    SDL_Point globalToLocal(SDL_Point);
+    bool collide(int, int);
     virtual void render(SDL_Renderer *);
     virtual void dispatch(mrb_sym, mrb_value*, int);
   };
