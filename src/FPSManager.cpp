@@ -3,8 +3,7 @@
 using namespace RubyAction;
 
 FPSManager::FPSManager(int fps)
-  : fps(fps),
-    counter(0),
+  : counter(0),
     startTicks(SDL_GetTicks())
 {
   SDL_initFramerate(&manager);
@@ -19,7 +18,7 @@ float FPSManager::step()
 
 int FPSManager::getTargetFPS()
 {
-  return fps;
+  return SDL_getFramerate(&manager);
 }
 
 int FPSManager::getAverageFPS()

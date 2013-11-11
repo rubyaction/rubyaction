@@ -10,7 +10,6 @@ namespace RubyAction
   {
   private:
     FPSmanager manager;
-    int fps;
     int counter;
     int startTicks;
   public:
