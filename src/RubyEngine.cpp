@@ -33,8 +33,8 @@ bool RubyEngine::load(const char *filename)
   mrbc_context *context = mrbc_context_new(mrb);
 
   struct mrb_parser_state *p = mrb_parse_file(mrb, fopen(filename, "r"), context);
-  int n = mrb_generate_code(mrb, p);
-  mrb_run(mrb, mrb_proc_new(mrb, mrb->irep[n]), mrb_top_self(mrb));
+  struct RProc *proc = mrb_generate_code(mrb, p);
+  mrb_run(mrb, proc, mrb_top_self(mrb));
   if (mrb->exc) {
     mrb_p(mrb, mrb_obj_value(mrb->exc));
     loaded = false;
@@ -60,12 +60,12 @@ RClass* RubyEngine::getClass(const char *name)
   return mrb_class_get_under(mrb, module, name);
 }
 
-mrb_value RubyEngine::newInstance(RClass* clazz, int argc, mrb_value *argv, bool callInit)
+mrb_value RubyEngine::newInstance(RClass* clazz, int argc, mrb_value *argv, bool initialize)
 {
   mrb_value object;
   RBasic *basic = mrb_obj_alloc(mrb, MRB_TT_DATA, clazz);
   object = mrb_obj_value(basic);
-  if (callInit) mrb_obj_call_init(mrb, object, argc, argv);
+  if (initialize) mrb_funcall_argv(mrb, object, mrb_intern(mrb, "initialize"), argc, argv);
   return object;
 }
 

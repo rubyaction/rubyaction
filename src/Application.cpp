@@ -116,6 +116,8 @@ int Application::run(const char *filename)
 
   while (running)
   {
+    int arena = mrb_gc_arena_save(engine->getState());
+
     while(SDL_PollEvent(&event)) {
       switch (event.type)
       {
@@ -133,6 +135,8 @@ int Application::run(const char *filename)
     SDL_RenderClear(renderer);
     Stage::getInstance()->render(renderer);
     SDL_RenderPresent(renderer);
+
+    mrb_gc_arena_restore(engine->getState(), arena);
 
     engine->garbageCollect();
 
