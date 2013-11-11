@@ -50,7 +50,7 @@ namespace RubyAction
     void removeChild(mrb_value);
     void removeFromParent();
     SDL_Point globalToLocal(SDL_Point);
-    bool collide(int, int);
+    bool collide(SDL_Point);
     virtual void render(SDL_Renderer *);
     virtual void dispatch(mrb_sym, mrb_value*, int);
   };

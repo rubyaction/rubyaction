@@ -225,9 +225,10 @@ SDL_Point Sprite::globalToLocal(SDL_Point global)
   };
 }
 
-bool Sprite::collide(int x, int y)
+bool Sprite::collide(SDL_Point point)
 {
-  return (x >= 0) && (x <= this->width) && (y >= 0) && (y <= this->height);
+  point = globalToLocal(point);
+  return (point.x >= 0) && (point.x <= width) && (point.y >= 0) && (point.y <= height);
 }
 
 void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
@@ -542,7 +543,7 @@ static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "ii", &x, &y);
 
   GET_INSTANCE(self, sprite, Sprite)
-  return mrb_bool_value(sprite->collide(x, y));
+  return mrb_bool_value(sprite->collide({ x, y }));
 }
 
 void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
