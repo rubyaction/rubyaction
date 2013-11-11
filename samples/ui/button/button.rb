@@ -60,7 +60,6 @@ class Button < RubyAction::Sprite
 
   def on_mouse_down button, x, y
     if collide?(x, y) then
-      puts [x, y]
       @focus = true
       update_visual_state true
     end
