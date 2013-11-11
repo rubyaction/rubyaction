@@ -51,7 +51,7 @@ namespace RubyAction
   extern struct mrb_data_type mrb_ruby_object_binding;
 
 #define SET_INSTANCE(value, object) \
-  { mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, value, &mrb_ruby_object_binding); \
+  { mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) DATA_PTR(value); \
   if (wrapper) mrb_ruby_object_free(mrb, wrapper); \
   wrapper = new mrb_ruby_object_type; \
   wrapper->instance = object; \
@@ -60,7 +60,7 @@ namespace RubyAction
 
 #define GET_INSTANCE(value, variable, type) \
   type *variable; \
-  { mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) mrb_check_datatype(mrb, value, &mrb_ruby_object_binding); \
+  { mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) DATA_PTR(value); \
   variable = (type*) wrapper->instance; }
 
 }
