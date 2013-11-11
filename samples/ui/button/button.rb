@@ -1,7 +1,7 @@
 #
 # A generic button class
 #
-# Copyright (c) 2013-2014 TangerinGames
+# Copyright (c) 2013-2014 TangerinaGames
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
