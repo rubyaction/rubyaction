@@ -169,18 +169,13 @@ void Sprite::render(SDL_Renderer *renderer)
 
 void Sprite::addChild(mrb_value child)
 {
-  mrb_value children = getProperty("children");
-
-  for (int i = 0; i < RARRAY_LEN(children); i++)
+  if (!contains(child))
   {
-    mrb_value current = mrb_ary_ref(mrb, children, i);
-    if (mrb_obj_equal(mrb, child, current)) return;
+    mrb_ary_push(mrb, getProperty("children"), child);
+    GET_INSTANCE(child, childSprite, Sprite)
+    childSprite->removeFromParent();
+    childSprite->setParent(this);
   }
-
-  mrb_ary_push(mrb, children, child);
-  GET_INSTANCE(child, childSprite, Sprite)
-  childSprite->removeFromParent();
-  childSprite->setParent(this);
 }
 
 void Sprite::removeChild(mrb_value child)
@@ -203,6 +198,17 @@ void Sprite::removeFromParent()
 {
   Sprite *parent = this->getParent();
   if (parent) parent->removeChild(this->getSelf());
+}
+
+bool Sprite::contains(mrb_value child)
+{
+  mrb_value children = getProperty("children");
+  for (int i = 0; i < RARRAY_LEN(children); i++)
+  {
+    mrb_value current = mrb_ary_ref(mrb, children, i);
+    if (mrb_obj_equal(mrb, child, current)) return true;
+  }
+  return false;
 }
 
 SDL_Point Sprite::globalToLocal(SDL_Point global)
@@ -523,6 +529,29 @@ static mrb_value Sprite_removeChild(mrb_state *mrb, mrb_value self)
   return self;
 }
 
+static mrb_value Sprite_removeFromParent(mrb_state *mrb, mrb_value self)
+{
+  GET_INSTANCE(self, sprite, Sprite)
+  sprite->removeFromParent();
+  return self;
+}
+
+static mrb_value Sprite_contains(mrb_state *mrb, mrb_value self)
+{
+  mrb_value child;
+  mrb_get_args(mrb, "o", &child);
+
+  struct RClass *module = mrb_class_get(mrb, "RubyAction");
+  struct RClass *clazz = mrb_class_get_under(mrb, module, "Sprite");
+  if (!mrb_obj_is_kind_of(mrb, child, clazz))
+  {
+    mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
+  }
+
+  GET_INSTANCE(self, sprite, Sprite)
+  return mrb_bool_value(sprite->contains(child));
+}
+
 static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
 {
   mrb_int x;
@@ -584,6 +613,8 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "parent", Sprite_getParent, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "add_child", Sprite_addChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "contains?", Sprite_contains, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
 

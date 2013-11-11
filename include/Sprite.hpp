@@ -49,6 +49,7 @@ namespace RubyAction
     void addChild(mrb_value);
     void removeChild(mrb_value);
     void removeFromParent();
+    bool contains(mrb_value);
     SDL_Point globalToLocal(SDL_Point);
     bool collide(SDL_Point);
     virtual void render(SDL_Renderer *);
