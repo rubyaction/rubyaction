@@ -11,7 +11,6 @@ namespace RubyAction
   {
   private:
   	SDL_Texture *texture;
-    void load(SDL_Renderer *);
   public:
     Texture(mrb_value, const char *);
     ~Texture();

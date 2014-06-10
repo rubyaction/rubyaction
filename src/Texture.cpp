@@ -42,10 +42,6 @@ Texture::~Texture()
   SDL_DestroyTexture(texture);
 }
 
-void Texture::load(SDL_Renderer *renderer)
-{
-}
-
 void Texture::render(SDL_Renderer *renderer, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
 {
   SDL_RenderCopy(renderer, texture, srcrect, dstrect);
