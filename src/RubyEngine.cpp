@@ -69,7 +69,7 @@ mrb_value RubyEngine::newInstance(RClass* clazz, int argc, mrb_value *argv, bool
   return object;
 }
 
-mrb_value RubyEngine::newInstance(const char *classname, int argc, mrb_value *argv, bool callInit)
+mrb_value RubyEngine::newInstance(const char *classname, int argc, mrb_value *argv, bool initialize)
 {
-  return newInstance(getClass(classname), argc, argv, callInit);
+  return newInstance(getClass(classname), argc, argv, initialize);
 }

@@ -19,7 +19,6 @@
 #include <mruby/value.h>
 #include <mruby/hash.h>
 #include <SDL_ttf.h>
-#include <SDL_image.h>
 
 using namespace RubyAction;
 
@@ -94,14 +93,6 @@ int Application::run(const char *filename)
     return -1;
   }
 
-  int flags = IMG_INIT_JPG | IMG_INIT_PNG;
-  int initted = IMG_Init(flags);
-  if ((initted & flags) != flags)
-  {
-    LOG(IMG_GetError());
-    return -1;
-  }
-
   int x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, width = config.width, height = config.height;
   window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -161,7 +152,6 @@ int Application::run(const char *filename)
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
 
-  IMG_Quit();
   TTF_Quit();
   SDL_Quit();
 
