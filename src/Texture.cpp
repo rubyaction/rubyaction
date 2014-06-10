@@ -1,16 +1,40 @@
 #include "Texture.hpp"
 #include "Application.hpp"
-#include <SDL_image.h>
+#include <FreeImagePLus.h>
 
 using namespace RubyAction;
 
 Texture::Texture(mrb_value self, const char *filename) : TextureBase(self)
 {
-  surface = IMG_Load(filename);
+  // load image
+  fipImage *image = new fipImage();
+  if (!image->load(filename))
+  {
+    mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on load the texture.");
+  }
+  if (!image->convertTo32Bits())
+  {
+    mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on convert the texture.");
+  }
 
-  this->width = surface->w;
-  this->height = surface->h;
-  this->texture = NULL;
+  // load image info
+  this->width = image->getWidth();
+  this->height = image->getHeight();
+
+  // create texture
+  SDL_Renderer *renderer = Application::getInstance()->getRenderer();
+  Uint32 format = SDL_PIXELFORMAT_ARGB8888;
+  Uint32 access = SDL_TEXTUREACCESS_STATIC;
+  this->texture = SDL_CreateTexture(renderer, format, access, this->width, this->height);
+
+  // load texture
+  SDL_Rect rect;
+  rect.w = this->width;
+  rect.h = this->height;
+  SDL_UpdateTexture(this->texture, &rect, image->accessPixels(), image->getLine());
+
+  // delete image
+  delete image;
 }
 
 Texture::~Texture()
@@ -20,16 +44,10 @@ Texture::~Texture()
 
 void Texture::load(SDL_Renderer *renderer)
 {
-  if (!texture)
-  {
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-  }
 }
 
 void Texture::render(SDL_Renderer *renderer, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
 {
-  load(renderer);
   SDL_RenderCopy(renderer, texture, srcrect, dstrect);
 }
 

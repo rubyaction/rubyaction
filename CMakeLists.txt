@@ -15,9 +15,9 @@ set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/lib/include/mruby
   ${PROJECT_SOURCE_DIR}/lib/include/Box2D
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2
-  ${PROJECT_SOURCE_DIR}/lib/include/SDL2_image
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_gfx
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_ttf
+  ${PROJECT_SOURCE_DIR}/lib/include/FreeImage
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
@@ -48,13 +48,17 @@ set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/os
 add_library(png STATIC IMPORTED)
 set_property(TARGET png PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libpng.a)
 
+# FreeImage
+add_library(freeimage STATIC IMPORTED)
+set_property(TARGET freeimage PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libfreeimage.a)
+
+# FreeImagePlus
+add_library(freeimageplus STATIC IMPORTED)
+set_property(TARGET freeimageplus PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libfreeimageplus.a)
+
 # SDL2
 add_library(sdl2 STATIC IMPORTED)
 set_property(TARGET sdl2 PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2.a)
-
-# SDL2_image
-add_library(sdl2_image STATIC IMPORTED)
-set_property(TARGET sdl2_image PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSDL2_image.a)
 
 # SDL2_gfx
 add_library(sdl2_gfx STATIC IMPORTED)
@@ -85,8 +89,9 @@ set(${project_name}_libraries
   bzip
   zlib
   png
+  freeimage
+  freeimageplus
   sdl2
-  sdl2_image
   sdl2_gfx
   sdl2_ttf
   ${cocoa}

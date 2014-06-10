@@ -10,8 +10,7 @@ namespace RubyAction
   class Texture : public TextureBase
   {
   private:
-  	SDL_Surface *surface;
-    SDL_Texture *texture;
+  	SDL_Texture *texture;
     void load(SDL_Renderer *);
   public:
     Texture(mrb_value, const char *);
