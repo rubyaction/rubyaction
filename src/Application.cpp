@@ -1,5 +1,4 @@
 #include "Application.hpp"
-#include "FPSManager.hpp"
 #include "RubyEngine.hpp"
 #include "EventDispatcher.hpp"
 #include "TextureBase.hpp"
@@ -113,10 +112,10 @@ int Application::run(const char *filename)
 
   if (!engine->load(filename)) return -1;
 
-  FPSManager fps(config.fps);
-
   bool running = true;
   SDL_Event event;
+
+  Uint32 before = SDL_GetTicks();
 
   while (running)
   {
@@ -133,7 +132,11 @@ int Application::run(const char *filename)
       }
     }
 
-    mrb_value delta = mrb_float_value(engine->getState(), fps.step());
+    Uint32 now = SDL_GetTicks();
+    float dt = (now - before) / 1000.0;
+    before = now;
+
+    mrb_value delta = mrb_float_value(engine->getState(), dt);
     Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
 
     SDL_RenderClear(renderer);
@@ -143,10 +146,6 @@ int Application::run(const char *filename)
     mrb_gc_arena_restore(engine->getState(), arena);
 
     engine->garbageCollect();
-
-    std::stringstream newTitle;
-    newTitle << config.title << " | FPS: " << fps.getAverageFPS();
-    SDL_SetWindowTitle(window, newTitle.str().c_str());
   }
 
   SDL_DestroyRenderer(renderer);
