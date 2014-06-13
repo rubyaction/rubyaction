@@ -180,18 +180,21 @@ void Sprite::addChild(mrb_value child)
 
 void Sprite::removeChild(mrb_value child)
 {
-  mrb_value old = getProperty("children");
-  mrb_value children = mrb_ary_new(mrb);
-
-  for (int i = 0; i < RARRAY_LEN(old); i++)
+  if (contains(child))
   {
-    mrb_value current = mrb_ary_ref(mrb, old, i);
-    if (!mrb_obj_equal(mrb, child, current)) mrb_ary_push(mrb, children, current);
-  }
+    mrb_value old = getProperty("children");
+    mrb_value children = mrb_ary_new(mrb);
 
-  setProperty("children", children);
-  GET_INSTANCE(child, childSprite, Sprite)
-  childSprite->setParent(NULL);
+    for (int i = 0; i < RARRAY_LEN(old); i++)
+    {
+      mrb_value current = mrb_ary_ref(mrb, old, i);
+      if (!mrb_obj_equal(mrb, child, current)) mrb_ary_push(mrb, children, current);
+    }
+
+    setProperty("children", children);
+    GET_INSTANCE(child, childSprite, Sprite)
+    childSprite->setParent(NULL);
+  }
 }
 
 void Sprite::removeFromParent()

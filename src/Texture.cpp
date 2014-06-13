@@ -4,21 +4,22 @@
 
 using namespace RubyAction;
 
-Texture::Texture(mrb_value self, const char *filename) : TextureBase(self)
+Texture::Texture(mrb_value self, const char *filename)
+  : TextureBase(self)
 {
   // load image
   fipImage *image = new fipImage();
   if (!image->load(filename))
   {
-    mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on load the texture.");
+    mrb_raise(RubyEngine::getInstance()->getState(), E_RUNTIME_ERROR, "Error on load the texture.");
   }
   if (!image->convertTo32Bits())
   {
-    mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on convert the texture.");
+    mrb_raise(RubyEngine::getInstance()->getState(), E_RUNTIME_ERROR, "Error on convert the texture.");
   }
   if (!image->flipVertical())
   {
-    mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on flip the texture.");
+    mrb_raise(RubyEngine::getInstance()->getState(), E_RUNTIME_ERROR, "Error on flip the texture.");
   }
 
   // load image info

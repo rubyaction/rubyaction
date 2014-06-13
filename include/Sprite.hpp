@@ -46,8 +46,8 @@ namespace RubyAction
     void setVisible(bool);
     Sprite* getParent();
     void setParent(Sprite*);
-    void addChild(mrb_value);
-    void removeChild(mrb_value);
+    virtual void addChild(mrb_value);
+    virtual void removeChild(mrb_value);
     void removeFromParent();
     bool contains(mrb_value);
     SDL_Point globalToLocal(SDL_Point);

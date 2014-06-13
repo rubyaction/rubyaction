@@ -13,6 +13,8 @@ namespace RubyAction
     Stage() : Sprite(mrb_nil_value()) {}
   public:
   	static Stage* getInstance();
+    virtual void addChild(mrb_value);
+    virtual void removeChild(mrb_value);
   };
 
   void bindStage(mrb_state*, RClass*);
