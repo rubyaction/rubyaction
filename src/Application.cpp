@@ -14,6 +14,7 @@
 #include "physics/Physics.hpp"
 
 #include <sstream>
+#include <iomanip>
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/hash.h>
@@ -116,6 +117,7 @@ int Application::run(const char *filename)
   SDL_Event event;
 
   Uint32 before = SDL_GetTicks();
+  Uint32 nextFPSUpdate = SDL_GetTicks();
 
   while (running)
   {
@@ -146,6 +148,14 @@ int Application::run(const char *filename)
     mrb_gc_arena_restore(engine->getState(), arena);
 
     engine->garbageCollect();
+
+    if (SDL_GetTicks() > nextFPSUpdate)
+    {
+      std::stringstream newTitle;
+      newTitle << config.title << " | FPS: " << std::setprecision(3) << (1.0 / dt);
+      SDL_SetWindowTitle(window, newTitle.str().c_str());
+      nextFPSUpdate = SDL_GetTicks() + 1000;
+    }
   }
 
   SDL_DestroyRenderer(renderer);
