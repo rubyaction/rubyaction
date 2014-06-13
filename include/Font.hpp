@@ -1,12 +1,12 @@
 #ifndef __FONT__
 #define __FONT__
 
-#include "BaseFont.hpp"
+#include "FontBase.hpp"
 
 namespace RubyAction
 {
 
-  class Font : public BaseFont
+  class Font : public FontBase
   {
   public:
     Font(mrb_value, const char *, const char *);

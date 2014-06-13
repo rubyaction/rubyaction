@@ -1,5 +1,5 @@
-#ifndef __BASE_FONT__
-#define __BASE_FONT__
+#ifndef __FONT_BASE__
+#define __FONT_BASE__
 
 #include "RubyObject.hpp"
 #include <mruby.h>
@@ -8,15 +8,15 @@
 namespace RubyAction
 {
 
-  class BaseFont : public RubyObject
+  class FontBase : public RubyObject
   {
   public:
-    BaseFont(mrb_value);
+    FontBase(mrb_value);
     virtual void render(SDL_Renderer *, const SDL_Rect *, const char *, SDL_Color) = 0;
   };
 
-  void bindBaseFont(mrb_state*, RClass*);
+  void bindFontBase(mrb_state*, RClass*);
 
 }
 
-#endif // __BASE_FONT__
+#endif // __FONT_BASE__

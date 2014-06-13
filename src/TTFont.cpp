@@ -4,13 +4,12 @@
 
 using namespace RubyAction;
 
-TTFont::TTFont(mrb_value self, const char *filename, int size)
-  : BaseFont(self)
+TTFont::TTFont(mrb_value self, const char *filename, int size) : FontBase(self)
 {
-  font = TTF_OpenFont(filename, size);
-  if (!font) {
+  if (!(font = TTF_OpenFont(filename, size)))
+  {
     std::stringstream message;
-    message << "Font file not found: " << filename;
+    message << "TrueType font not found: " << filename;
     mrb_raise(mrb, E_ARGUMENT_ERROR, message.str().c_str());
   }
 }
@@ -86,7 +85,7 @@ static mrb_value TTFont_initialize(mrb_state *mrb, mrb_value self)
 
 void RubyAction::bindTTFont(mrb_state *mrb, RClass *module)
 {
-  struct RClass *super = mrb_class_get_under(mrb, module, "BaseFont");
+  struct RClass *super = mrb_class_get_under(mrb, module, "FontBase");
   struct RClass *clazz = mrb_define_class_under(mrb, module, "TTFont", super);
   MRB_SET_INSTANCE_TT(clazz, MRB_TT_DATA);
 

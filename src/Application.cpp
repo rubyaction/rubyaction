@@ -8,7 +8,7 @@
 #include "Bitmap.hpp"
 #include "TextureRegion.hpp"
 #include "Stage.hpp"
-#include "BaseFont.hpp"
+#include "FontBase.hpp"
 #include "Font.hpp"
 #include "TTFont.hpp"
 #include "TextField.hpp"
@@ -105,7 +105,7 @@ int Application::run(const char *filename)
   engine->bind(RubyAction::bindBitmap);
   engine->bind(RubyAction::bindTextureRegion);
   engine->bind(RubyAction::bindStage);
-  engine->bind(RubyAction::bindBaseFont);
+  engine->bind(RubyAction::bindFontBase);
   engine->bind(RubyAction::bindFont);
   engine->bind(RubyAction::bindTTFont);
   engine->bind(RubyAction::bindTextField);

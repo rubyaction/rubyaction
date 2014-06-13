@@ -1,5 +1,5 @@
 #include "TextField.hpp"
-#include "BaseFont.hpp"
+#include "FontBase.hpp"
 #include "util/array.hpp"
 
 using namespace RubyAction;
@@ -14,7 +14,7 @@ TextField::TextField(mrb_value self, mrb_value font, const char *text)
 
 void TextField::renderMe(SDL_Renderer *renderer)
 {
-  BaseFont *font = (BaseFont*) this->getObject("font");
+  FontBase *font = (FontBase*) this->getObject("font");
   SDL_Rect dstrect = { 0, 0, this->getWidth(), this->getHeight() };
   font->render(renderer, &dstrect, this->getText(), color);
 }
@@ -48,8 +48,8 @@ static mrb_value TextField_initialize(mrb_state *mrb, mrb_value self)
 
   RubyEngine *engine = RubyEngine::getInstance();
 
-  if (!mrb_obj_is_kind_of(mrb, font, engine->getClass("BaseFont")))
-    mrb_raise(mrb, E_TYPE_ERROR, "expected BaseFont");
+  if (!mrb_obj_is_kind_of(mrb, font, engine->getClass("FontBase")))
+    mrb_raise(mrb, E_TYPE_ERROR, "expected FontBase");
 
   SET_INSTANCE(self, new TextField(self, font, text));
   return self;

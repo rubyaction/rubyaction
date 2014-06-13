@@ -1,14 +1,14 @@
 #ifndef __TTFONT__
 #define __TTFONT__
 
-#include "BaseFont.hpp"
+#include "FontBase.hpp"
 #include "SDL_ttf.h"
 #include <map>
 
 namespace RubyAction
 {
 
-  class TTFont : public BaseFont
+  class TTFont : public FontBase
   {
   private:
     struct Glyph {
