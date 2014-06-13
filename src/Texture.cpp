@@ -16,6 +16,10 @@ Texture::Texture(mrb_value self, const char *filename) : TextureBase(self)
   {
     mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on convert the texture.");
   }
+  if (!image->flipVertical())
+  {
+    mrb_raise(RubyEngine::getInstance()->getState(), E_TYPE_ERROR, "Error on flip the texture.");
+  }
 
   // load image info
   this->width = image->getWidth();
@@ -28,9 +32,7 @@ Texture::Texture(mrb_value self, const char *filename) : TextureBase(self)
   this->texture = SDL_CreateTexture(renderer, format, access, this->width, this->height);
 
   // load texture
-  SDL_Rect rect;
-  rect.w = this->width;
-  rect.h = this->height;
+  SDL_Rect rect = { 0, 0, this->width, this->height };
   SDL_UpdateTexture(this->texture, &rect, image->accessPixels(), image->getLine());
 
   // delete image

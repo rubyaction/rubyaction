@@ -46,7 +46,7 @@ void mouseButtonEvent(SDL_Event *event, const char *name)
 void keyEvent(SDL_Event *event, const char *name)
 {
   mrb_state *mrb = RubyEngine::getInstance()->getState();
-  mrb_value data = mrb_fixnum_value(event->key.keysym.sym);
+  mrb_value data = mrb_str_new_cstr(mrb, SDL_GetKeyName(event->key.keysym.sym));
   Stage::getInstance()->dispatch(mrb_intern(mrb, name), &data, 1);
 }
 
