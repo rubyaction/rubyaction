@@ -48,10 +48,6 @@ set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/os
 add_library(png STATIC IMPORTED)
 set_property(TARGET png PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libpng.a)
 
-# FreeImage
-add_library(freeimage STATIC IMPORTED)
-set_property(TARGET freeimage PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libfreeimage.a)
-
 # FreeImagePlus
 add_library(freeimageplus STATIC IMPORTED)
 set_property(TARGET freeimageplus PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libfreeimageplus.a)
@@ -89,7 +85,6 @@ set(${project_name}_libraries
   bzip
   zlib
   png
-  freeimage
   freeimageplus
   sdl2
   sdl2_gfx
