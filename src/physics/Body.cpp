@@ -14,7 +14,7 @@ namespace Physics
   {
     RubyEngine *engine = RubyEngine::getInstance();
     RClass *clazz = mrb_class_get_under(mrb, engine->getClass("Physics"), "Body");
-    this->self = engine->newInstance(clazz, 0, NULL, false);
+    this->self = engine->newInstance(clazz, NULL, 0, false);
 
     b2BodyDef def;
 

@@ -15,7 +15,7 @@ namespace RubyAction
     void on(mrb_sym, mrb_value);
     void off(mrb_sym);
     void off();
-    void dispatch(mrb_sym, mrb_value*, int);
+    virtual void dispatch(mrb_sym, mrb_value* = NULL, int = 0);
   };
 
   void bindEventDispatcher(mrb_state*, RClass*);

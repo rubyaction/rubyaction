@@ -60,7 +60,7 @@ RClass* RubyEngine::getClass(const char *name)
   return mrb_class_get_under(mrb, module, name);
 }
 
-mrb_value RubyEngine::newInstance(RClass* clazz, int argc, mrb_value *argv, bool initialize)
+mrb_value RubyEngine::newInstance(RClass* clazz, mrb_value *argv, int argc, bool initialize)
 {
   mrb_value object;
   RBasic *basic = mrb_obj_alloc(mrb, MRB_TT_DATA, clazz);
@@ -69,7 +69,7 @@ mrb_value RubyEngine::newInstance(RClass* clazz, int argc, mrb_value *argv, bool
   return object;
 }
 
-mrb_value RubyEngine::newInstance(const char *classname, int argc, mrb_value *argv, bool initialize)
+mrb_value RubyEngine::newInstance(const char *classname, mrb_value *argv, int argc, bool initialize)
 {
-  return newInstance(getClass(classname), argc, argv, initialize);
+  return newInstance(getClass(classname), argv, argc, initialize);
 }

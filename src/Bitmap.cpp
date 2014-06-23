@@ -33,7 +33,7 @@ static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)
   mrb_value texture_region;
 
   if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("TextureBase")))
-    texture_region = engine->newInstance("TextureRegion", 1, &arg);
+    texture_region = engine->newInstance("TextureRegion", &arg, 1);
   else if (mrb_obj_is_kind_of(mrb, arg, engine->getClass("TextureRegion")))
     texture_region = arg;
   else

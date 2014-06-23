@@ -25,8 +25,8 @@ namespace RubyAction
     void garbageCollect();
     mrb_state* getState();
     RClass* getClass(const char *);
-    mrb_value newInstance(RClass *, int, mrb_value *, bool = true);
-    mrb_value newInstance(const char *, int, mrb_value *, bool = true);
+    mrb_value newInstance(RClass *, mrb_value* = NULL, int = 0, bool = true);
+    mrb_value newInstance(const char *, mrb_value* = NULL, int = 0, bool = true);
   };
 
 }

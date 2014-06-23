@@ -53,7 +53,7 @@ namespace RubyAction
     SDL_Point globalToLocal(SDL_Point);
     bool collide(SDL_Point);
     virtual void render(SDL_Renderer *);
-    virtual void dispatch(mrb_sym, mrb_value*, int);
+    virtual void dispatch(mrb_sym, mrb_value* = NULL, int = 0);
   };
 
   void bindSprite(mrb_state*, RClass*);

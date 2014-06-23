@@ -623,4 +623,5 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
 
   // alias
   mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add_child"));
+  mrb_alias_method(mrb, clazz, mrb_intern(mrb, ">>"), mrb_intern(mrb, "remove_child"));
 }
