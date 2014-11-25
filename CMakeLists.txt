@@ -17,7 +17,7 @@ set(${project_name}_include
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_gfx
   ${PROJECT_SOURCE_DIR}/lib/include/SDL2_ttf
-  ${PROJECT_SOURCE_DIR}/lib/include/FreeImage
+  ${PROJECT_SOURCE_DIR}/lib/include/stb_image
 )
 
 file(GLOB_RECURSE ${project_name}_sources src/*.cpp)
@@ -48,9 +48,9 @@ set_property(TARGET zlib PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/os
 add_library(png STATIC IMPORTED)
 set_property(TARGET png PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libpng.a)
 
-# FreeImagePlus
-add_library(freeimageplus STATIC IMPORTED)
-set_property(TARGET freeimageplus PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libfreeimageplus.a)
+# stb_image
+add_library(stb_image STATIC IMPORTED)
+set_property(TARGET stb_image PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/lib/osx/libSTB_Image.a)
 
 # SDL2
 add_library(sdl2 STATIC IMPORTED)
@@ -85,7 +85,7 @@ set(${project_name}_libraries
   bzip
   zlib
   png
-  freeimageplus
+  stb_image
   sdl2
   sdl2_gfx
   sdl2_ttf
