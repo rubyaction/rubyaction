@@ -1,4 +1,5 @@
 #include "EventDispatcher.hpp"
+#include "Application.hpp"
 #include <mruby/hash.h>
 
 using namespace RubyAction;
@@ -33,6 +34,12 @@ void EventDispatcher::dispatch(mrb_sym name, mrb_value* argv, int argc)
       mrb_funcall_argv(mrb, self, mrb_symbol(listener), argc, argv);
     else
       mrb_yield_argv(mrb, listener, argc, argv);
+
+    if (mrb->exc)
+    {
+      mrb_print_error(mrb);
+      Application::getInstance()->running = false;
+    }
   }
 }
 

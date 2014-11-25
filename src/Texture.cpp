@@ -1,5 +1,6 @@
 #include "Texture.hpp"
 #include "Application.hpp"
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 using namespace RubyAction;
@@ -13,11 +14,11 @@ Texture::Texture(mrb_value self, const char *filename)
 
   // texture params
   SDL_Renderer *renderer = Application::getInstance()->getRenderer();
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  Uint32 format = SDL_PIXELFORMAT_RGBA8888;
-#else
-  Uint32 format = SDL_PIXELFORMAT_ABGR8888;
-#endif
+  #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    Uint32 format = SDL_PIXELFORMAT_RGBA8888;
+  #else
+    Uint32 format = SDL_PIXELFORMAT_ABGR8888;
+  #endif
   Uint32 access = SDL_TEXTUREACCESS_STATIC;
 
   // create texture

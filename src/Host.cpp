@@ -7,7 +7,6 @@ int main(int argc, const char **argv)
   app->config.width = 800;
   app->config.height = 600;
   app->config.title = "RubyAction";
-  app->config.fps = 60;
 
   return app->run((argc > 1) ? argv[1] : "main.rb");
 }

@@ -10,8 +10,8 @@ namespace RubyAction
   class Sprite : public EventDispatcher
   {
   private:
-    int x;
-    int y;
+    float x;
+    float y;
     int width;
     int height;
     float scaleX;
@@ -24,10 +24,10 @@ namespace RubyAction
     virtual void renderMe(SDL_Renderer *) {};
   public:
     Sprite(mrb_value);
-    int getX();
-    void setX(int);
-    int getY();
-    void setY(int);
+    float getX();
+    void setX(float);
+    float getY();
+    void setY(float);
     int getWidth();
     void setWidth(int);
     int getHeight();

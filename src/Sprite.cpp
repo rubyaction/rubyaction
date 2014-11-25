@@ -29,22 +29,22 @@ Sprite::Sprite(mrb_value self)
   }
 }
 
-int Sprite::getX()
+float Sprite::getX()
 {
   return x;
 }
 
-void Sprite::setX(int x)
+void Sprite::setX(float x)
 {
   this->x = x;
 }
 
-int Sprite::getY()
+float Sprite::getY()
 {
   return y;
 }
 
-void Sprite::setY(int y)
+void Sprite::setY(float y)
 {
   this->y = y;
 }
@@ -262,13 +262,13 @@ static mrb_value Sprite_initialize(mrb_state *mrb, mrb_value self)
 static mrb_value Sprite_getX(mrb_state *mrb, mrb_value self)
 {
   GET_INSTANCE(self, sprite, Sprite)
-  return mrb_fixnum_value(sprite->getX());
+  return mrb_float_value(mrb, sprite->getX());
 }
 
 static mrb_value Sprite_setX(mrb_state *mrb, mrb_value self)
 {
-  mrb_int x;
-  mrb_get_args(mrb, "i", &x);
+  mrb_float x;
+  mrb_get_args(mrb, "f", &x);
 
   GET_INSTANCE(self, sprite, Sprite)
   sprite->setX(x);
@@ -278,13 +278,13 @@ static mrb_value Sprite_setX(mrb_state *mrb, mrb_value self)
 static mrb_value Sprite_getY(mrb_state *mrb, mrb_value self)
 {
   GET_INSTANCE(self, sprite, Sprite)
-  return mrb_fixnum_value(sprite->getY());
+  return mrb_float_value(mrb, sprite->getY());
 }
 
 static mrb_value Sprite_setY(mrb_state *mrb, mrb_value self)
 {
-  mrb_int y;
-  mrb_get_args(mrb, "i", &y);
+  mrb_float y;
+  mrb_get_args(mrb, "f", &y);
 
   GET_INSTANCE(self, sprite, Sprite)
   sprite->setY(y);
@@ -303,8 +303,8 @@ static mrb_value Sprite_setPosition(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "A", &position);
 
   GET_INSTANCE(self, sprite, Sprite)
-  sprite->setX(A_GET_INT(position, 0));
-  sprite->setY(A_GET_INT(position, 1));
+  sprite->setX(A_GET_FLOAT(position, 0));
+  sprite->setY(A_GET_FLOAT(position, 1));
 
   return self;
 }

@@ -113,13 +113,13 @@ int Application::run(const char *filename)
 
   if (!engine->load(filename)) return -1;
 
-  bool running = true;
+  this->running = true;
   SDL_Event event;
 
   Uint32 before = SDL_GetTicks();
   Uint32 nextFPSUpdate = SDL_GetTicks();
 
-  while (running)
+  while (this->running)
   {
     int arena = mrb_gc_arena_save(engine->getState());
 

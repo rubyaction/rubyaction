@@ -3,7 +3,6 @@
 
 #include <mruby.h>
 
-
 namespace RubyAction
 {
 namespace Physics
