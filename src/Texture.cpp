@@ -1,45 +1,23 @@
 #include "Texture.hpp"
-#include "Application.hpp"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
 using namespace RubyAction;
 
 Texture::Texture(mrb_value self, const char *filename)
   : TextureBase(self)
 {
-  // load image
-  unsigned char *pixels = stbi_load(filename, &this->width, &this->height, NULL, STBI_rgb_alpha);
-  if (!pixels) mrb_raise(RubyEngine::getInstance()->getState(), E_RUNTIME_ERROR, "Error on load the texture.");
+  texture = sf::Texture();
+  texture.loadFromFile(filename);
+  sprite = sf::Sprite(texture);
 
-  // texture params
-  SDL_Renderer *renderer = Application::getInstance()->getRenderer();
-  #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    Uint32 format = SDL_PIXELFORMAT_RGBA8888;
-  #else
-    Uint32 format = SDL_PIXELFORMAT_ABGR8888;
-  #endif
-  Uint32 access = SDL_TEXTUREACCESS_STATIC;
-
-  // create texture
-  this->texture = SDL_CreateTexture(renderer, format, access, this->width, this->height);
-
-  // load texture
-  SDL_Rect rect = { 0, 0, this->width, this->height };
-  SDL_UpdateTexture(this->texture, &rect, pixels, STBI_rgb_alpha * this->width);
-
-  // clean memory
-  stbi_image_free(pixels);
+  sf::Vector2u size = texture.getSize();
+  width = size.x;
+  height = size.y;
 }
 
-Texture::~Texture()
+void Texture::render(sf::RenderTarget &target, const sf::Transform &transform, const sf::IntRect &rect)
 {
-  SDL_DestroyTexture(texture);
-}
-
-void Texture::render(SDL_Renderer *renderer, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
-{
-  SDL_RenderCopy(renderer, texture, srcrect, dstrect);
+  sprite.setTextureRect(rect);
+  target.draw(sprite, transform);
 }
 
 static mrb_value Texture_initialize(mrb_state *mrb, mrb_value self)

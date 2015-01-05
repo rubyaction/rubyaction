@@ -3,7 +3,7 @@
 
 #include "RubyObject.hpp"
 #include <mruby.h>
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 namespace RubyAction
 {
@@ -12,7 +12,7 @@ namespace RubyAction
   {
   public:
     FontBase(mrb_value);
-    virtual void render(SDL_Renderer *, const SDL_Rect *, const char *, SDL_Color) = 0;
+    virtual void render(sf::RenderTarget *, sf::Transform *, sf::Color *, sf::FloatRect, const char *) = 0;
   };
 
   void bindFontBase(mrb_state*, RClass*);

@@ -2,8 +2,6 @@
 #define __TTFONT__
 
 #include "FontBase.hpp"
-#include "SDL_ttf.h"
-#include <map>
 
 namespace RubyAction
 {
@@ -11,20 +9,11 @@ namespace RubyAction
   class TTFont : public FontBase
   {
   private:
-    struct Glyph {
-      int w, h, advance;
-      SDL_Texture *texture;
-    };
-
-    typedef std::map<char, Glyph*> GlyphCache;
-
-    GlyphCache glyphs;
-    TTF_Font *font;
-    Glyph * getGlyph(SDL_Renderer *, char);
+    sf::Font font;
+    sf::Text text;
   public:
     TTFont(mrb_value, const char *, int);
-    ~TTFont();
-    virtual void render(SDL_Renderer *, const SDL_Rect *, const char *, SDL_Color);
+    virtual void render(sf::RenderTarget *, sf::Transform *, sf::Color *, sf::FloatRect, const char *);
   };
 
   void bindTTFont(mrb_state*, RClass*);

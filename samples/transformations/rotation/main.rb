@@ -14,3 +14,10 @@ RubyAction::Stage << crate
 RubyAction::Stage.on :enter_frame do |dt|
   crate.rotation += dt * 100
 end
+
+RubyAction::Stage.on :mouse_down do |button, x, y|
+	x, y = crate.scale
+  crate.scale = [x * 1.1, y * 1.1] if button == 0
+  crate.scale = [x * 0.9, y * 0.9] if button == 1
+end
+

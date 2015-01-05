@@ -3,6 +3,7 @@
 
 #include "Sprite.hpp"
 #include <string>
+#include <SFML/Graphics.hpp>
 
 namespace RubyAction
 {
@@ -11,13 +12,14 @@ namespace RubyAction
   {
   private:
     std::string text;
-    SDL_Color color;
+    sf::Color *color;
   protected:
-    virtual void renderMe(SDL_Renderer *);
+    virtual void renderMe(sf::RenderTarget *, sf::Transform *);
   public:
     TextField(mrb_value, mrb_value, const char *);
-    void setColor(SDL_Color);
-    SDL_Color getColor();
+    ~TextField();
+    void setColor(sf::Color*);
+    sf::Color * getColor();
     void setText(const char *);
     const char * getText();
   };

@@ -1,5 +1,4 @@
 #include "RubyObject.hpp"
-#include <iostream>
 
 using namespace RubyAction;
 

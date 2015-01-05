@@ -1,7 +1,7 @@
 #ifndef __APPLICATION__
 #define __APPLICATION__
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 namespace RubyAction
 {
@@ -11,15 +11,11 @@ namespace RubyAction
   private:
     static Application *instance;
     Application() {}
-    SDL_Window *window;
-    SDL_Renderer *renderer;
 
   public:
-    bool running;
+    sf::RenderWindow *window;
     static Application* getInstance();
     int run(const char *);
-    SDL_Window* getWindow();
-    SDL_Renderer* getRenderer();
 
     struct {
       int width = 800;

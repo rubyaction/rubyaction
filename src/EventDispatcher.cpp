@@ -38,7 +38,7 @@ void EventDispatcher::dispatch(mrb_sym name, mrb_value* argv, int argc)
     if (mrb->exc)
     {
       mrb_print_error(mrb);
-      Application::getInstance()->running = false;
+      Application::getInstance()->window->close();
     }
   }
 }

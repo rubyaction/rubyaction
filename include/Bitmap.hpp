@@ -9,7 +9,7 @@ namespace RubyAction
   class Bitmap : public Sprite
   {
   protected:
-    virtual void renderMe(SDL_Renderer *);
+    virtual void renderMe(sf::RenderTarget *, sf::Transform *);
   public:
     Bitmap(mrb_value, mrb_value);
   };

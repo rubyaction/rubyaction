@@ -3,10 +3,6 @@
 #include <mruby/array.h>
 #include <mruby/class.h>
 #include <mruby/variable.h>
-#include <SDL_opengl.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 using namespace RubyAction;
 
@@ -139,32 +135,30 @@ void Sprite::setParent(Sprite *parent)
   setProperty("parent", parent ? parent->getSelf() : mrb_nil_value());
 }
 
-void Sprite::render(SDL_Renderer *renderer)
+void Sprite::render(sf::RenderTarget *renderer, sf::Transform *parentTransform)
 {
   if (!isVisible()) return;
 
-  glPushMatrix();
-  glm::mat4 matrix = glm::mat4(1.0);
+  sf::Transform anchor;
+  anchor.translate(-width * scaleX * anchorX, -height * scaleY * anchorY);
+  sf::Transform rotate;
+  rotate.rotate(rotation);
+  sf::Transform translate;
+  translate.translate(x, y);
+  sf::Transform scale;
+  scale.scale(scaleX, scaleY);
+  sf::Transform local = translate * (rotate * anchor) * scale;
+  sf::Transform tranform = (*parentTransform) * local;
 
-  glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * scaleX * anchorX, -height * scaleY * anchorY, 0.0f));
-  glm::mat4 rotate = glm::rotate(matrix, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-  glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
-  glm::mat4 scale = glm::scale(matrix, glm::vec3(scaleX, scaleY, 0));
-
-  glm::mat4 model = translate * (rotate * anchor) * scale;
-  glMultMatrixf(glm::value_ptr(model));
-
-  this->renderMe(renderer);
+  this->renderMe(renderer, &tranform);
 
   mrb_value children = getProperty("children");
   for (int i = 0; i < RARRAY_LEN(children); i++)
   {
     mrb_value child = mrb_ary_ref(mrb, children, i);
     GET_INSTANCE(child, sprite, Sprite)
-    sprite->render(renderer);
+    sprite->render(renderer, &tranform);
   }
-
-  glPopMatrix();
 }
 
 void Sprite::addChild(mrb_value child)
@@ -214,31 +208,31 @@ bool Sprite::contains(mrb_value child)
   return false;
 }
 
-SDL_Point Sprite::globalToLocal(SDL_Point global)
-{
-  Sprite *parent = this->getParent();
-  if (parent) global = parent->globalToLocal(global);
+// SDL_Point Sprite::globalToLocal(SDL_Point global)
+// {
+//   Sprite *parent = this->getParent();
+//   if (parent) global = parent->globalToLocal(global);
 
-  glm::mat4 matrix = glm::mat4(1.0);
-  glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * anchorX, -height * anchorY, 0.0f));
-  glm::mat4 rotate = glm::rotate(matrix, -rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-  glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
-  glm::mat4 model = translate * (rotate * anchor);
+//   glm::mat4 matrix = glm::mat4(1.0);
+//   glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * anchorX, -height * anchorY, 0.0f));
+//   glm::mat4 rotate = glm::rotate(matrix, -rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+//   glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
+//   glm::mat4 model = translate * (rotate * anchor);
 
-  glm::vec4 point = model * glm::vec4(global.x, global.y, 1, 1);
-  glm::vec4 position = model * glm::vec4(x, y, 1, 1);
+//   glm::vec4 point = model * glm::vec4(global.x, global.y, 1, 1);
+//   glm::vec4 position = model * glm::vec4(x, y, 1, 1);
 
-  return {
-    (int) ((point.x - position.x + width * anchorX * scaleX) / scaleX),
-    (int) ((point.y - position.y + height * anchorY * scaleY) / scaleY)
-  };
-}
+//   return {
+//     (int) ((point.x - position.x + width * anchorX * scaleX) / scaleX),
+//     (int) ((point.y - position.y + height * anchorY * scaleY) / scaleY)
+//   };
+// }
 
-bool Sprite::collide(SDL_Point point)
-{
-  point = globalToLocal(point);
-  return (point.x >= 0) && (point.x <= width) && (point.y >= 0) && (point.y <= height);
-}
+// bool Sprite::collide(SDL_Point point)
+// {
+//   point = globalToLocal(point);
+//   return (point.x >= 0) && (point.x <= width) && (point.y >= 0) && (point.y <= height);
+// }
 
 void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
 {
@@ -555,28 +549,28 @@ static mrb_value Sprite_contains(mrb_state *mrb, mrb_value self)
   return mrb_bool_value(sprite->contains(child));
 }
 
-static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
-{
-  mrb_int x;
-  mrb_int y;
-  mrb_get_args(mrb, "ii", &x, &y);
+// static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
+// {
+//   mrb_int x;
+//   mrb_int y;
+//   mrb_get_args(mrb, "ii", &x, &y);
 
-  GET_INSTANCE(self, sprite, Sprite)
-  SDL_Point p = sprite->globalToLocal({ x, y });
+//   GET_INSTANCE(self, sprite, Sprite)
+//   SDL_Point p = sprite->globalToLocal({ x, y });
 
-  mrb_value point[2] = { mrb_fixnum_value(p.x), mrb_fixnum_value(p.y) };
-  return mrb_ary_new_from_values(mrb, 2, point);
-}
+//   mrb_value point[2] = { mrb_fixnum_value(p.x), mrb_fixnum_value(p.y) };
+//   return mrb_ary_new_from_values(mrb, 2, point);
+// }
 
-static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
-{
-  mrb_int x;
-  mrb_int y;
-  mrb_get_args(mrb, "ii", &x, &y);
+// static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
+// {
+//   mrb_int x;
+//   mrb_int y;
+//   mrb_get_args(mrb, "ii", &x, &y);
 
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_bool_value(sprite->collide({ x, y }));
-}
+//   GET_INSTANCE(self, sprite, Sprite)
+//   return mrb_bool_value(sprite->collide({ x, y }));
+// }
 
 void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
 {
@@ -618,8 +612,8 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "contains?", Sprite_contains, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
-  mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
+  // mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
+  // mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
 
   // alias
   mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add_child"));

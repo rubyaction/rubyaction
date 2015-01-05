@@ -18,59 +18,58 @@
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/hash.h>
-#include <SDL_ttf.h>
 
 using namespace RubyAction;
 
-void mouseMoveEvent(SDL_Event *event)
-{
-  mrb_state *mrb = RubyEngine::getInstance()->getState();
-  mrb_value data[] = {
-    mrb_fixnum_value(event->motion.x),
-    mrb_fixnum_value(event->motion.y)
-  };
-  Stage::getInstance()->dispatch(mrb_intern(mrb, "mouse_move"), data, 2);
-}
+// void mouseMoveEvent(SDL_Event *event)
+// {
+//   mrb_state *mrb = RubyEngine::getInstance()->getState();
+//   mrb_value data[] = {
+//     mrb_fixnum_value(event->motion.x),
+//     mrb_fixnum_value(event->motion.y)
+//   };
+//   Stage::getInstance()->dispatch(mrb_intern(mrb, "mouse_move"), data, 2);
+// }
 
-void mouseButtonEvent(SDL_Event *event, const char *name)
-{
-  mrb_state *mrb = RubyEngine::getInstance()->getState();
-  mrb_value data[] = {
-    mrb_fixnum_value(event->button.button),
-    mrb_fixnum_value(event->button.x),
-    mrb_fixnum_value(event->button.y)
-  };
-  Stage::getInstance()->dispatch(mrb_intern(mrb, name), data, 3);
-}
+// void mouseButtonEvent(SDL_Event *event, const char *name)
+// {
+//   mrb_state *mrb = RubyEngine::getInstance()->getState();
+//   mrb_value data[] = {
+//     mrb_fixnum_value(event->button.button),
+//     mrb_fixnum_value(event->button.x),
+//     mrb_fixnum_value(event->button.y)
+//   };
+//   Stage::getInstance()->dispatch(mrb_intern(mrb, name), data, 3);
+// }
 
-void keyEvent(SDL_Event *event, const char *name)
-{
-  mrb_state *mrb = RubyEngine::getInstance()->getState();
-  mrb_value data = mrb_str_new_cstr(mrb, SDL_GetKeyName(event->key.keysym.sym));
-  Stage::getInstance()->dispatch(mrb_intern(mrb, name), &data, 1);
-}
+// void keyEvent(SDL_Event *event, const char *name)
+// {
+//   mrb_state *mrb = RubyEngine::getInstance()->getState();
+//   mrb_value data = mrb_str_new_cstr(mrb, SDL_GetKeyName(event->key.keysym.sym));
+//   Stage::getInstance()->dispatch(mrb_intern(mrb, name), &data, 1);
+// }
 
-void processInputEvents(SDL_Event *event)
-{
-  switch (event->type)
-  {
-    case SDL_MOUSEMOTION:
-      mouseMoveEvent(event);
-      break;
-    case SDL_MOUSEBUTTONDOWN:
-      mouseButtonEvent(event, "mouse_down");
-      break;
-    case SDL_MOUSEBUTTONUP:
-      mouseButtonEvent(event, "mouse_up");
-      break;
-    case SDL_KEYDOWN:
-      keyEvent(event, "key_down");
-      break;
-    case SDL_KEYUP:
-      keyEvent(event, "key_up");
-      break;
-  }
-}
+// void processInputEvents(SDL_Event *event)
+// {
+//   switch (event->type)
+//   {
+//     case SDL_MOUSEMOTION:
+//       mouseMoveEvent(event);
+//       break;
+//     case SDL_MOUSEBUTTONDOWN:
+//       mouseButtonEvent(event, "mouse_down");
+//       break;
+//     case SDL_MOUSEBUTTONUP:
+//       mouseButtonEvent(event, "mouse_up");
+//       break;
+//     case SDL_KEYDOWN:
+//       keyEvent(event, "key_down");
+//       break;
+//     case SDL_KEYUP:
+//       keyEvent(event, "key_up");
+//       break;
+//   }
+// }
 
 Application *Application::instance = new Application();
 
@@ -81,21 +80,7 @@ Application* Application::getInstance()
 
 int Application::run(const char *filename)
 {
-  if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-  {
-    LOG(SDL_GetError());
-    return -1;
-  }
-
-  if (TTF_Init() < 0)
-  {
-    LOG(SDL_GetError());
-    return -1;
-  }
-
-  int x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED, width = config.width, height = config.height;
-  window = SDL_CreateWindow(config.title, x, y, width, height, SDL_WINDOW_SHOWN);
-  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  window = new sf::RenderWindow(sf::VideoMode(config.width, config.height), config.title);
 
   RubyAction::RubyEngine *engine = RubyAction::RubyEngine::getInstance();
   engine->bind(RubyAction::bindEventDispatcher);
@@ -113,66 +98,56 @@ int Application::run(const char *filename)
 
   if (!engine->load(filename)) return -1;
 
-  this->running = true;
-  SDL_Event event;
+  sf::Clock clock;
+  sf::Transform identity = sf::Transform::Identity;
 
-  Uint32 before = SDL_GetTicks();
-  Uint32 nextFPSUpdate = SDL_GetTicks();
-
-  while (this->running)
+  while (window->isOpen())
   {
     int arena = mrb_gc_arena_save(engine->getState());
 
-    while(SDL_PollEvent(&event)) {
-      switch (event.type)
+    // Process events
+    sf::Event event;
+    while (window->pollEvent(event))
+    {
+      // Close window: exit
+      if (event.type == sf::Event::Closed)
       {
-        case SDL_QUIT:
-          running = false;
-          break;
-        default:
-          processInputEvents(&event);
+        window->close();
+      }
+      else if (event.type == sf::Event::MouseButtonPressed)
+      {
+        mrb_state *mrb = RubyEngine::getInstance()->getState();
+        mrb_value data[] = {
+          mrb_fixnum_value(event.mouseButton.button),
+          mrb_fixnum_value(event.mouseButton.x),
+          mrb_fixnum_value(event.mouseButton.y)
+        };
+        const char *name = (event.type == sf::Event::MouseButtonPressed) ? "mouse_down" : "mouse_up";
+        Stage::getInstance()->dispatch(mrb_intern(mrb, name), data, 3);
       }
     }
 
-    Uint32 now = SDL_GetTicks();
-    float dt = (now - before) / 1000.0;
-    before = now;
-
-    mrb_value delta = mrb_float_value(engine->getState(), dt);
+    mrb_value delta = mrb_float_value(engine->getState(), clock.restart().asSeconds());
     Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
 
-    SDL_RenderClear(renderer);
-    Stage::getInstance()->render(renderer);
-    SDL_RenderPresent(renderer);
+    window->clear();
+    Stage::getInstance()->render(window, &identity);
+    window->display();
 
     mrb_gc_arena_restore(engine->getState(), arena);
 
     engine->garbageCollect();
 
-    if (SDL_GetTicks() > nextFPSUpdate)
-    {
-      std::stringstream newTitle;
-      newTitle << config.title << " | FPS: " << std::setprecision(3) << (1.0 / dt);
-      SDL_SetWindowTitle(window, newTitle.str().c_str());
-      nextFPSUpdate = SDL_GetTicks() + 1000;
-    }
+    // if (SDL_GetTicks() > nextFPSUpdate)
+    // {
+    //   std::stringstream newTitle;
+    //   newTitle << config.title << " | FPS: " << std::setprecision(3) << (1.0 / dt);
+    //   SDL_SetWindowTitle(window, newTitle.str().c_str());
+    //   nextFPSUpdate = SDL_GetTicks() + 1000;
+    // }
   }
 
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-
-  TTF_Quit();
-  SDL_Quit();
-
+  window->close();
+  delete window;
   return 0;
-}
-
-SDL_Window* Application::getWindow()
-{
-  return window;
-}
-
-SDL_Renderer* Application::getRenderer()
-{
-  return renderer;
 }

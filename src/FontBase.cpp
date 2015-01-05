@@ -9,7 +9,7 @@ FontBase::FontBase(mrb_value self)
 
 static mrb_value FontBase_initialize(mrb_state *mrb, mrb_value self)
 {
-  mrb_raise(mrb, E_RUNTIME_ERROR, "The FontBase can't be instantiated. Please use one of this subclasses.");
+  mrb_raise(mrb, E_RUNTIME_ERROR, "The FontBase can't be instantiated. Please use one of subclasses.");
   return self;
 }
 

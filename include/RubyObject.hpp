@@ -39,7 +39,7 @@ namespace RubyAction
 
   static void mrb_ruby_object_free(mrb_state *mrb, void *pointer)
   {
-    mrb_ruby_object_type *wrapper = (mrb_ruby_object_type *) pointer;
+    mrb_ruby_object_type *wrapper = (mrb_ruby_object_type*) pointer;
     if (wrapper && wrapper->instance)
     {
       delete wrapper->instance;

@@ -2,7 +2,7 @@
 #define __SPRITE__
 
 #include "EventDispatcher.hpp"
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 namespace RubyAction
 {
@@ -21,7 +21,7 @@ namespace RubyAction
     float rotation;
     bool visible;
   protected:
-    virtual void renderMe(SDL_Renderer *) {};
+    virtual void renderMe(sf::RenderTarget *, sf::Transform *) {};
   public:
     Sprite(mrb_value);
     float getX();
@@ -50,9 +50,9 @@ namespace RubyAction
     virtual void removeChild(mrb_value);
     void removeFromParent();
     bool contains(mrb_value);
-    SDL_Point globalToLocal(SDL_Point);
-    bool collide(SDL_Point);
-    virtual void render(SDL_Renderer *);
+    // SDL_Point globalToLocal(SDL_Point);
+    // bool collide(SDL_Point);
+    virtual void render(sf::RenderTarget *, sf::Transform *);
     virtual void dispatch(mrb_sym, mrb_value* = NULL, int = 0);
   };
 
