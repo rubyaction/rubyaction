@@ -20,6 +20,7 @@ namespace RubyAction
     float anchorY;
     float rotation;
     bool visible;
+    sf::Color color;
     sf::Transform transform;
   protected:
     virtual void renderMe(sf::RenderTarget *) {};
@@ -48,6 +49,8 @@ namespace RubyAction
     void setVisible(bool);
     Sprite* getParent();
     void setParent(Sprite*);
+    void setColor(sf::Color color);
+    const sf::Color& getColor();
     virtual void addChild(mrb_value);
     virtual void removeChild(mrb_value);
     void removeFromParent();

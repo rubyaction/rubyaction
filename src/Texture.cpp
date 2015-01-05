@@ -14,8 +14,10 @@ Texture::Texture(mrb_value self, const char *filename)
   height = size.y;
 }
 
-void Texture::render(sf::RenderTarget &target, const sf::Transform &transform, const sf::IntRect &rect)
+void Texture::render(sf::RenderTarget &target, const sf::Transform &transform, const sf::IntRect &rect,
+  const sf::Color &color)
 {
+  sprite.setColor(color);
   sprite.setTextureRect(rect);
   target.draw(sprite, transform);
 }

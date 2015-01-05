@@ -12,7 +12,7 @@ namespace RubyAction
   {
   public:
     FontBase(mrb_value);
-    virtual void render(sf::RenderTarget *, sf::Transform *, sf::Color *, sf::FloatRect, const char *) = 0;
+    virtual void render(sf::RenderTarget&, const sf::Transform&, const sf::IntRect&, const sf::Color&, const char *) = 0;
   };
 
   void bindFontBase(mrb_state*, RClass*);

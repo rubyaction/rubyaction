@@ -17,7 +17,8 @@ Sprite::Sprite(mrb_value self)
     anchorX(0),
     anchorY(0),
     rotation(0),
-    visible(true)
+    visible(true),
+    color(sf::Color::White)
 {
   if (!mrb_nil_p(self))
   {
@@ -133,6 +134,16 @@ Sprite* Sprite::getParent()
 void Sprite::setParent(Sprite *parent)
 {
   setProperty("parent", parent ? parent->getSelf() : mrb_nil_value());
+}
+
+void Sprite::setColor(sf::Color color)
+{
+  this->color = color;
+}
+
+const sf::Color& Sprite::getColor()
+{
+  return color;
 }
 
 void Sprite::render(sf::RenderTarget *renderer)
@@ -485,6 +496,31 @@ static mrb_value Sprite_getParent(mrb_state *mrb, mrb_value self)
   return parent ? parent->getSelf() : mrb_nil_value();
 }
 
+static mrb_value Sprite_getColor(mrb_state *mrb, mrb_value self)
+{
+  GET_INSTANCE(self, sprite, Sprite)
+  const sf::Color color = sprite->getColor();
+  mrb_value c[4] = {
+    mrb_float_value(mrb, color.r),
+    mrb_float_value(mrb, color.g),
+    mrb_float_value(mrb, color.b),
+    mrb_float_value(mrb, color.a),
+  };
+  return mrb_ary_new_from_values(mrb, 4, c);
+}
+
+static mrb_value Sprite_setColor(mrb_state *mrb, mrb_value self)
+{
+  mrb_value color;
+  mrb_get_args(mrb, "A", &color);
+
+  GET_INSTANCE(self, sprite, Sprite)
+  sprite->setColor(
+    sf::Color(A_GET_FLOAT(color, 0), A_GET_FLOAT(color, 1), A_GET_FLOAT(color, 2), A_GET_FLOAT(color, 3))
+  );
+  return self;
+}
+
 static mrb_value Sprite_addChild(mrb_state *mrb, mrb_value self)
 {
   mrb_value child;
@@ -600,6 +636,8 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "visible?", Sprite_isVisible, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "visible=", Sprite_setVisible, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "parent", Sprite_getParent, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "color", Sprite_getColor, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "color=", Sprite_setColor, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "add_child", Sprite_addChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));

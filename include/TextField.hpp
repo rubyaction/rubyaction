@@ -12,14 +12,10 @@ namespace RubyAction
   {
   private:
     std::string text;
-    sf::Color *color;
   protected:
     virtual void renderMe(sf::RenderTarget *);
   public:
     TextField(mrb_value, mrb_value, const char *);
-    ~TextField();
-    void setColor(sf::Color*);
-    sf::Color * getColor();
     void setText(const char *);
     const char * getText();
   };

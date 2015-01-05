@@ -16,18 +16,18 @@ TTFont::TTFont(mrb_value self, const char *filename, int size) : FontBase(self)
   text.setCharacterSize(size);
 }
 
-void TTFont::render(sf::RenderTarget *renderer, sf::Transform *transform, sf::Color *color,
-  sf::FloatRect bounds, const char *text)
+void TTFont::render(sf::RenderTarget& renderer, const sf::Transform& transform, const sf::IntRect& bounds,
+  const sf::Color& color, const char *text)
 {
   this->text.setString(text);
-  this->text.setColor(*color);
+  this->text.setColor(color);
 
   sf::FloatRect localBounds = this->text.getLocalBounds();
   sf::Transform localTransform;
   localTransform.scale(bounds.width / localBounds.width, bounds.height / localBounds.height);
   localTransform.translate(-localBounds.left, -localBounds.top);
 
-  renderer->draw(this->text, (*transform) * localTransform);
+  renderer.draw(this->text, transform * localTransform);
 }
 
 static mrb_value TTFont_initialize(mrb_state *mrb, mrb_value self)

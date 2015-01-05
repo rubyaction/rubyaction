@@ -13,7 +13,7 @@ namespace RubyAction
     sf::Text text;
   public:
     TTFont(mrb_value, const char *, int);
-    virtual void render(sf::RenderTarget *, sf::Transform *, sf::Color *, sf::FloatRect, const char *);
+    void render(sf::RenderTarget&, const sf::Transform&, const sf::IntRect&, const sf::Color&, const char *);
   };
 
   void bindTTFont(mrb_state*, RClass*);

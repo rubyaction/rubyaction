@@ -19,8 +19,9 @@ void Bitmap::renderMe(sf::RenderTarget *renderer)
   TextureRegion *region = (TextureRegion*) this->getObject("texture_region");
   Texture *texture = (Texture*) region->getObject("texture");
   sf::IntRect rect(region->getX(), region->getY(), region->getWidth(), region->getHeight());
+  sf::Color color = this->getColor();
 
-  texture->render(*renderer, transform, rect);
+  texture->render(*renderer, transform, rect, color);
 }
 
 static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)

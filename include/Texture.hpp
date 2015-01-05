@@ -14,7 +14,7 @@ namespace RubyAction
     sf::Sprite sprite;
   public:
     Texture(mrb_value self, const char *filename);
-    void render(sf::RenderTarget &target, const sf::Transform &transform, const sf::IntRect &rect);
+    void render(sf::RenderTarget &target, const sf::Transform &transform, const sf::IntRect &rect, const sf::Color &c);
   };
 
   void bindTexture(mrb_state*, RClass*);
