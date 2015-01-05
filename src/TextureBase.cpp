@@ -21,7 +21,7 @@ int TextureBase::getHeight()
 
 static mrb_value TextureBase_initialize(mrb_state *mrb, mrb_value self)
 {
-  SET_INSTANCE(self, new TextureBase(self))
+  mrb_raise(mrb, E_RUNTIME_ERROR, "The TextureBase can't be instantiated. Please use one of subclasses.");
   return self;
 }
 

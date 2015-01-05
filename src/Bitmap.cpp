@@ -17,7 +17,7 @@ void Bitmap::renderMe(sf::RenderTarget *renderer)
 {
   sf::Transform transform = this->getTransform();
   TextureRegion *region = (TextureRegion*) this->getObject("texture_region");
-  Texture *texture = (Texture*) region->getObject("texture");
+  TextureBase *texture = region->getTextureBase();
   sf::IntRect rect(region->getX(), region->getY(), region->getWidth(), region->getHeight());
   sf::Color color = this->getColor();
 

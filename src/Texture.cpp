@@ -5,9 +5,8 @@ using namespace RubyAction;
 Texture::Texture(mrb_value self, const char *filename)
   : TextureBase(self)
 {
-  texture = sf::Texture();
   texture.loadFromFile(filename);
-  sprite = sf::Sprite(texture);
+  sprite.setTexture(texture);
 
   sf::Vector2u size = texture.getSize();
   width = size.x;

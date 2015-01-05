@@ -40,9 +40,9 @@ void TextureRegion::setRegion(int x, int y, int width, int height)
   this->height = height;
 }
 
-Texture* TextureRegion::getTexture()
+TextureBase* TextureRegion::getTextureBase()
 {
-  return (Texture*) getObject("texture");
+  return (TextureBase*) getObject("texture_base");
 }
 
 static mrb_value TextureRegion_initialize(mrb_state *mrb, mrb_value self)
@@ -54,12 +54,12 @@ static mrb_value TextureRegion_initialize(mrb_state *mrb, mrb_value self)
   mrb_int height;
   int argc = mrb_get_args(mrb, "o|iiii", &tex, &x, &y, &width, &height);
 
-  RClass *clazz = RubyEngine::getInstance()->getClass("Texture");
-  if (!mrb_obj_is_kind_of(mrb, tex, clazz)) mrb_raise(mrb, E_TYPE_ERROR, "expected Texture");
+  RClass *clazz = RubyEngine::getInstance()->getClass("TextureBase");
+  if (!mrb_obj_is_kind_of(mrb, tex, clazz)) mrb_raise(mrb, E_TYPE_ERROR, "expected TextureBase");
 
-  mrb_iv_set(mrb, self, mrb_intern(mrb, "texture"), tex);
+  mrb_iv_set(mrb, self, mrb_intern(mrb, "texture_base"), tex);
 
-  GET_INSTANCE(tex, texture, Texture)
+  GET_INSTANCE(tex, texture, TextureBase)
 
   if (argc < 2) x = 0;
   if (argc < 3) y = 0;

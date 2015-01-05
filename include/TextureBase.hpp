@@ -2,6 +2,7 @@
 #define __TEXTURE_BASE__
 
 #include "RubyObject.hpp"
+#include <SFML/Graphics.hpp>
 #include <mruby.h>
 
 namespace RubyAction
@@ -16,6 +17,7 @@ namespace RubyAction
     TextureBase(mrb_value);
     int getWidth();
     int getHeight();
+    virtual void render(sf::RenderTarget&, const sf::Transform&, const sf::IntRect&, const sf::Color&) = 0;
   };
 
   void bindTextureBase(mrb_state*, RClass*);

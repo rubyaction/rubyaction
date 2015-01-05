@@ -2,7 +2,6 @@
 #define __TEXTURE__
 
 #include "TextureBase.hpp"
-#include <SFML/Graphics.hpp>
 
 namespace RubyAction
 {
@@ -10,11 +9,11 @@ namespace RubyAction
   class Texture : public TextureBase
   {
   private:
-  	sf::Texture texture;
+    sf::Texture texture;
     sf::Sprite sprite;
   public:
     Texture(mrb_value self, const char *filename);
-    void render(sf::RenderTarget &target, const sf::Transform &transform, const sf::IntRect &rect, const sf::Color &c);
+    virtual void render(sf::RenderTarget&, const sf::Transform&, const sf::IntRect&, const sf::Color&);
   };
 
   void bindTexture(mrb_state*, RClass*);

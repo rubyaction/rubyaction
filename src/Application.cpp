@@ -11,6 +11,7 @@
 #include "Font.hpp"
 #include "TTFont.hpp"
 #include "TextField.hpp"
+#include "RenderTarget.hpp"
 #include "physics/Physics.hpp"
 
 #include <sstream>
@@ -103,6 +104,7 @@ int Application::run(const char *filename)
   engine->bind(RubyAction::bindFont);
   engine->bind(RubyAction::bindTTFont);
   engine->bind(RubyAction::bindTextField);
+  engine->bind(RubyAction::bindRenderTarget);
   engine->bind(RubyAction::Physics::bind);
 
   if (!engine->load(filename)) return -1;

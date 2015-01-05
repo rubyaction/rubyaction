@@ -1,7 +1,7 @@
 #ifndef __TEXTURE_REGION__
 #define __TEXTURE_REGION__
 
-#include "Texture.hpp"
+#include "TextureBase.hpp"
 
 namespace RubyAction
 {
@@ -20,7 +20,7 @@ namespace RubyAction
     int getWidth();
     int getHeight();
     void setRegion(int, int, int, int);
-    Texture* getTexture();
+    TextureBase* getTextureBase();
   };
 
   void bindTextureRegion(mrb_state*, RClass*);
