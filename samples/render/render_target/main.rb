@@ -4,14 +4,13 @@ RubyAction::Stage << background
 
 # crate
 crate = RubyAction::Bitmap.new RubyAction::Texture.new "crate.png"
+crate.anchor = [0.5, 0.5]
 
 # render target
-rt = RubyAction::RenderTarget.new crate.width * 2, crate.height * 2
+rt = RubyAction::RenderTarget.new 800, 600
 
 # bitmap
 bitmap = RubyAction::Bitmap.new rt
-bitmap.position = [200, 100]
-bitmap.scale = [2, 2]
 RubyAction::Stage << bitmap
 
 frame = 0
@@ -23,8 +22,9 @@ RubyAction::Stage.on :enter_frame do |dt|
 
   # update crate
   crate.color = [r * 255, g * 255, b * 255, 255]
-  crate.x += dt * 10
-  crate.y += dt * 10
+  crate.x += dt * 50
+  crate.y += dt * 40
+  crate.rotation += dt * 50
 
   # draw crate
   rt.draw crate
