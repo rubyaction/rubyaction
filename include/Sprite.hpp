@@ -56,6 +56,7 @@ namespace RubyAction
     void removeFromParent();
     bool contains(mrb_value);
     void globalToLocal(float gx, float gy, float* x, float* y);
+    void localToGlobal(float x, float y, float* gx, float* gy);
     bool collide(float gx, float gy);
     virtual void render(sf::RenderTarget *);
     virtual void dispatch(mrb_sym, mrb_value* = NULL, int = 0);

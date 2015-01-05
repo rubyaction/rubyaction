@@ -216,6 +216,14 @@ void Sprite::globalToLocal(float gx, float gy, float* x, float* y)
   *y = local.y;
 }
 
+void Sprite::localToGlobal(float x, float y, float* gx, float* gy)
+{
+  sf::Transform transform = this->getTransform();
+  sf::Vector2f global = transform.transformPoint(x, y);
+  *gx = global.x;
+  *gy = global.y;
+}
+
 bool Sprite::collide(float gx, float gy)
 {
   float x, y;
@@ -591,6 +599,19 @@ static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
   return mrb_ary_new_from_values(mrb, 2, point);
 }
 
+static mrb_value Sprite_localToGlobal(mrb_state *mrb, mrb_value self)
+{
+  mrb_float x, y;
+  mrb_get_args(mrb, "ff", &x, &y);
+
+  float gx, gy;
+  GET_INSTANCE(self, sprite, Sprite)
+  sprite->localToGlobal(x, y, &gx, &gy);
+
+  mrb_value point[2] = { mrb_float_value(mrb, gx), mrb_float_value(mrb, gy) };
+  return mrb_ary_new_from_values(mrb, 2, point);
+}
+
 static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
 {
   mrb_float x, y;
@@ -643,6 +664,7 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "contains?", Sprite_contains, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, clazz, "local_to_global", Sprite_localToGlobal, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
 
   // alias
