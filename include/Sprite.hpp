@@ -23,7 +23,7 @@ namespace RubyAction
     sf::Color color;
     sf::Transform transform;
   protected:
-    virtual void renderMe(sf::RenderTarget *) {};
+    virtual void renderMe(sf::RenderTarget*) {};
     const sf::Transform& getTransform();
   public:
     Sprite(mrb_value);
@@ -55,10 +55,11 @@ namespace RubyAction
     virtual void removeChild(mrb_value);
     void removeFromParent();
     bool contains(mrb_value);
+    sf::FloatRect getBounds(Sprite*);
     void globalToLocal(float gx, float gy, float* x, float* y);
     void localToGlobal(float x, float y, float* gx, float* gy);
     bool collide(float gx, float gy);
-    virtual void render(sf::RenderTarget *);
+    virtual void render(sf::RenderTarget*);
     virtual void dispatch(mrb_sym, mrb_value* = NULL, int = 0);
   };
 

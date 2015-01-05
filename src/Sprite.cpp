@@ -208,6 +208,14 @@ bool Sprite::contains(mrb_value child)
   return false;
 }
 
+sf::FloatRect Sprite::getBounds(Sprite* other)
+{
+  sf::FloatRect bounds(0, 0, width, height);
+  bounds = this->getTransform().transformRect(bounds);
+  bounds = other->getTransform().getInverse().transformRect(bounds);
+  return bounds;
+}
+
 void Sprite::globalToLocal(float gx, float gy, float* x, float* y)
 {
   sf::Transform inverse = this->getTransform().getInverse();
@@ -586,6 +594,31 @@ static mrb_value Sprite_contains(mrb_state *mrb, mrb_value self)
   return mrb_bool_value(sprite->contains(child));
 }
 
+static mrb_value Sprite_getBounds(mrb_state *mrb, mrb_value self)
+{
+  mrb_value other;
+  mrb_get_args(mrb, "o", &other);
+
+  struct RClass *module = mrb_class_get(mrb, "RubyAction");
+  struct RClass *clazz = mrb_class_get_under(mrb, module, "Sprite");
+  if (!mrb_obj_is_kind_of(mrb, other, clazz))
+  {
+    mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
+  }
+
+  GET_INSTANCE(self, sprite, Sprite)
+  GET_INSTANCE(other, otherSprite, Sprite)
+  sf::FloatRect bounds = sprite->getBounds(otherSprite);
+
+  mrb_value point[4] = {
+    mrb_float_value(mrb, bounds.left),
+    mrb_float_value(mrb, bounds.top),
+    mrb_float_value(mrb, bounds.width),
+    mrb_float_value(mrb, bounds.height),
+  };
+  return mrb_ary_new_from_values(mrb, 4, point);
+}
+
 static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
 {
   mrb_float gx, gy;
@@ -663,6 +696,7 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "contains?", Sprite_contains, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "bounds", Sprite_getBounds, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, clazz, "local_to_global", Sprite_localToGlobal, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
