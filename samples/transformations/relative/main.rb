@@ -14,7 +14,7 @@ RubyAction::Stage << crate1
 
 # crate2
 crate2 = RubyAction::Bitmap.new texture
-crate2.position = [100, 100]
+crate2.position = [86, 86]
 crate2.anchor = [0.5, 0.5]
 crate2.scale = [0.5, 0.5]
 crate1 << crate2
@@ -24,4 +24,3 @@ RubyAction::Stage.on :enter_frame do |dt|
   crate1.rotation += angle
   crate2.rotation -= angle
 end
-

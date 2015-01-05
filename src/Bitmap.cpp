@@ -13,13 +13,14 @@ Bitmap::Bitmap(mrb_value self, mrb_value texture_region)
   setHeight(region->getHeight());
 }
 
-void Bitmap::renderMe(sf::RenderTarget *renderer, sf::Transform *transform)
+void Bitmap::renderMe(sf::RenderTarget *renderer)
 {
+  sf::Transform transform = this->getTransform();
   TextureRegion *region = (TextureRegion*) this->getObject("texture_region");
   Texture *texture = (Texture*) region->getObject("texture");
   sf::IntRect rect(region->getX(), region->getY(), region->getWidth(), region->getHeight());
 
-  texture->render(*renderer, *transform, rect);
+  texture->render(*renderer, transform, rect);
 }
 
 static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)

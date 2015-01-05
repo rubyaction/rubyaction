@@ -14,7 +14,7 @@ namespace RubyAction
     std::string text;
     sf::Color *color;
   protected:
-    virtual void renderMe(sf::RenderTarget *, sf::Transform *);
+    virtual void renderMe(sf::RenderTarget *);
   public:
     TextField(mrb_value, mrb_value, const char *);
     ~TextField();

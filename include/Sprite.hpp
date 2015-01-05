@@ -20,8 +20,10 @@ namespace RubyAction
     float anchorY;
     float rotation;
     bool visible;
+    sf::Transform transform;
   protected:
-    virtual void renderMe(sf::RenderTarget *, sf::Transform *) {};
+    virtual void renderMe(sf::RenderTarget *) {};
+    const sf::Transform& getTransform();
   public:
     Sprite(mrb_value);
     float getX();
@@ -50,9 +52,9 @@ namespace RubyAction
     virtual void removeChild(mrb_value);
     void removeFromParent();
     bool contains(mrb_value);
-    // SDL_Point globalToLocal(SDL_Point);
-    // bool collide(SDL_Point);
-    virtual void render(sf::RenderTarget *, sf::Transform *);
+    void globalToLocal(float gx, float gy, float* x, float* y);
+    bool collide(float gx, float gy);
+    virtual void render(sf::RenderTarget *);
     virtual void dispatch(mrb_sym, mrb_value* = NULL, int = 0);
   };
 

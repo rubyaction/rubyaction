@@ -17,11 +17,12 @@ TextField::~TextField()
   delete color;
 }
 
-void TextField::renderMe(sf::RenderTarget *renderer, sf::Transform *transform)
+void TextField::renderMe(sf::RenderTarget *renderer)
 {
+  sf::Transform transform = this->getTransform();
   sf::FloatRect bounds(0, 0, getWidth(), getHeight());
   FontBase *font = (FontBase*) getObject("font");
-  font->render(renderer, transform, color, bounds, text.c_str());
+  font->render(renderer, &transform, color, bounds, text.c_str());
 }
 
 void TextField::setColor(sf::Color *color)

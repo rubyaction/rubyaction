@@ -22,7 +22,7 @@ RubyEngine::~RubyEngine()
   mrb_close(mrb);
 }
 
-void RubyEngine::bind(bind_func func)
+void RubyEngine::bind(bindFunction func)
 {
   func(mrb, module);
 }
@@ -62,9 +62,8 @@ RClass* RubyEngine::getClass(const char *name)
 
 mrb_value RubyEngine::newInstance(RClass* clazz, mrb_value *argv, int argc, bool initialize)
 {
-  mrb_value object;
   RBasic *basic = mrb_obj_alloc(mrb, MRB_TT_DATA, clazz);
-  object = mrb_obj_value(basic);
+  mrb_value object = mrb_obj_value(basic);
   if (initialize) mrb_funcall_argv(mrb, object, mrb_intern(mrb, "initialize"), argc, argv);
   return object;
 }

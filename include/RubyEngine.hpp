@@ -11,7 +11,7 @@ namespace RubyAction
   class RubyEngine
   {
   private:
-    typedef void (*bind_func)(mrb_state*, RClass*);
+    typedef void (*bindFunction)(mrb_state*, RClass*);
     static RubyEngine *instance;
     mrb_state *mrb;
     RClass *module;
@@ -20,7 +20,7 @@ namespace RubyAction
   public:
     ~RubyEngine();
     static RubyEngine* getInstance();
-    void bind(bind_func);
+    void bind(bindFunction);
     bool load(const char *);
     void garbageCollect();
     mrb_state* getState();

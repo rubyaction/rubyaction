@@ -135,29 +135,18 @@ void Sprite::setParent(Sprite *parent)
   setProperty("parent", parent ? parent->getSelf() : mrb_nil_value());
 }
 
-void Sprite::render(sf::RenderTarget *renderer, sf::Transform *parentTransform)
+void Sprite::render(sf::RenderTarget *renderer)
 {
   if (!isVisible()) return;
 
-  sf::Transform anchor;
-  anchor.translate(-width * scaleX * anchorX, -height * scaleY * anchorY);
-  sf::Transform rotate;
-  rotate.rotate(rotation);
-  sf::Transform translate;
-  translate.translate(x, y);
-  sf::Transform scale;
-  scale.scale(scaleX, scaleY);
-  sf::Transform local = translate * (rotate * anchor) * scale;
-  sf::Transform tranform = (*parentTransform) * local;
-
-  this->renderMe(renderer, &tranform);
+  this->renderMe(renderer);
 
   mrb_value children = getProperty("children");
   for (int i = 0; i < RARRAY_LEN(children); i++)
   {
     mrb_value child = mrb_ary_ref(mrb, children, i);
     GET_INSTANCE(child, sprite, Sprite)
-    sprite->render(renderer, &tranform);
+    sprite->render(renderer);
   }
 }
 
@@ -208,31 +197,20 @@ bool Sprite::contains(mrb_value child)
   return false;
 }
 
-// SDL_Point Sprite::globalToLocal(SDL_Point global)
-// {
-//   Sprite *parent = this->getParent();
-//   if (parent) global = parent->globalToLocal(global);
+void Sprite::globalToLocal(float gx, float gy, float* x, float* y)
+{
+  sf::Transform inverse = this->getTransform().getInverse();
+  sf::Vector2f local = inverse.transformPoint(gx, gy);
+  *x = local.x;
+  *y = local.y;
+}
 
-//   glm::mat4 matrix = glm::mat4(1.0);
-//   glm::mat4 anchor = glm::translate(matrix, glm::vec3(-width * anchorX, -height * anchorY, 0.0f));
-//   glm::mat4 rotate = glm::rotate(matrix, -rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-//   glm::mat4 translate = glm::translate(matrix, glm::vec3(x, y, 0));
-//   glm::mat4 model = translate * (rotate * anchor);
-
-//   glm::vec4 point = model * glm::vec4(global.x, global.y, 1, 1);
-//   glm::vec4 position = model * glm::vec4(x, y, 1, 1);
-
-//   return {
-//     (int) ((point.x - position.x + width * anchorX * scaleX) / scaleX),
-//     (int) ((point.y - position.y + height * anchorY * scaleY) / scaleY)
-//   };
-// }
-
-// bool Sprite::collide(SDL_Point point)
-// {
-//   point = globalToLocal(point);
-//   return (point.x >= 0) && (point.x <= width) && (point.y >= 0) && (point.y <= height);
-// }
+bool Sprite::collide(float gx, float gy)
+{
+  float x, y;
+  this->globalToLocal(gx, gy, &x, &y);
+  return (x >= 0) && (x <= width) && (y >= 0) && (y <= height);
+}
 
 void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
 {
@@ -245,6 +223,24 @@ void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
   }
 
   EventDispatcher::dispatch(name, argv, argc);
+}
+
+const sf::Transform& Sprite::getTransform()
+{
+  sf::Transform anchor;
+  anchor.translate(-width * scaleX * anchorX, -height * scaleY * anchorY);
+  sf::Transform rotate;
+  rotate.rotate(rotation);
+  sf::Transform translate;
+  translate.translate(x, y);
+  sf::Transform scale;
+  scale.scale(scaleX, scaleY);
+  this->transform = translate * (rotate * anchor) * scale;
+
+  Sprite *parent = this->getParent();
+  if (parent) transform = parent->getTransform() * transform;
+
+  return transform;
 }
 
 static mrb_value Sprite_initialize(mrb_state *mrb, mrb_value self)
@@ -349,7 +345,6 @@ static mrb_value Sprite_setSize(mrb_state *mrb, mrb_value self)
   GET_INSTANCE(self, sprite, Sprite)
   sprite->setWidth(A_GET_INT(size, 0));
   sprite->setHeight(A_GET_INT(size, 1));
-
   return self;
 }
 
@@ -399,7 +394,6 @@ static mrb_value Sprite_setScale(mrb_state *mrb, mrb_value self)
   GET_INSTANCE(self, sprite, Sprite)
   sprite->setScaleX(A_GET_FLOAT(scale, 0));
   sprite->setScaleY(A_GET_FLOAT(scale, 1));
-
   return self;
 }
 
@@ -449,7 +443,6 @@ static mrb_value Sprite_setAnchor(mrb_state *mrb, mrb_value self)
   GET_INSTANCE(self, sprite, Sprite)
   sprite->setAnchorX(A_GET_FLOAT(anchor, 0));
   sprite->setAnchorY(A_GET_FLOAT(anchor, 1));
-
   return self;
 }
 
@@ -549,28 +542,27 @@ static mrb_value Sprite_contains(mrb_state *mrb, mrb_value self)
   return mrb_bool_value(sprite->contains(child));
 }
 
-// static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
-// {
-//   mrb_int x;
-//   mrb_int y;
-//   mrb_get_args(mrb, "ii", &x, &y);
+static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
+{
+  mrb_float gx, gy;
+  mrb_get_args(mrb, "ff", &gx, &gy);
 
-//   GET_INSTANCE(self, sprite, Sprite)
-//   SDL_Point p = sprite->globalToLocal({ x, y });
+  float x, y;
+  GET_INSTANCE(self, sprite, Sprite)
+  sprite->globalToLocal(gx, gy, &x, &y);
 
-//   mrb_value point[2] = { mrb_fixnum_value(p.x), mrb_fixnum_value(p.y) };
-//   return mrb_ary_new_from_values(mrb, 2, point);
-// }
+  mrb_value point[2] = { mrb_float_value(mrb, x), mrb_float_value(mrb, y) };
+  return mrb_ary_new_from_values(mrb, 2, point);
+}
 
-// static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
-// {
-//   mrb_int x;
-//   mrb_int y;
-//   mrb_get_args(mrb, "ii", &x, &y);
+static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
+{
+  mrb_float x, y;
+  mrb_get_args(mrb, "ff", &x, &y);
 
-//   GET_INSTANCE(self, sprite, Sprite)
-//   return mrb_bool_value(sprite->collide({ x, y }));
-// }
+  GET_INSTANCE(self, sprite, Sprite)
+  return mrb_bool_value(sprite->collide(x, y));
+}
 
 void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
 {
@@ -612,8 +604,8 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "contains?", Sprite_contains, MRB_ARGS_REQ(1));
-  // mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
-  // mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
 
   // alias
   mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add_child"));
