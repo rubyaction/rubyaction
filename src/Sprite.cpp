@@ -517,10 +517,10 @@ static mrb_value Sprite_getColor(mrb_state *mrb, mrb_value self)
   GET_INSTANCE(self, sprite, Sprite)
   const sf::Color color = sprite->getColor();
   mrb_value c[4] = {
-    mrb_float_value(mrb, color.r),
-    mrb_float_value(mrb, color.g),
-    mrb_float_value(mrb, color.b),
-    mrb_float_value(mrb, color.a),
+    mrb_float_value(mrb, float(color.r) / 255),
+    mrb_float_value(mrb, float(color.g) / 255),
+    mrb_float_value(mrb, float(color.b) / 255),
+    mrb_float_value(mrb, float(color.a) / 255),
   };
   return mrb_ary_new_from_values(mrb, 4, c);
 }
@@ -532,7 +532,12 @@ static mrb_value Sprite_setColor(mrb_state *mrb, mrb_value self)
 
   GET_INSTANCE(self, sprite, Sprite)
   sprite->setColor(
-    sf::Color(A_GET_FLOAT(color, 0), A_GET_FLOAT(color, 1), A_GET_FLOAT(color, 2), A_GET_FLOAT(color, 3))
+    sf::Color(
+      A_GET_FLOAT(color, 0) * 255,
+      A_GET_FLOAT(color, 1) * 255,
+      A_GET_FLOAT(color, 2) * 255,
+      A_GET_FLOAT(color, 3) * 255
+    )
   );
   return self;
 }

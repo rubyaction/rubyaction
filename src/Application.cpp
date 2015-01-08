@@ -120,7 +120,7 @@ int Application::run(const char *filename)
     mrb_value delta = mrb_float_value(engine->getState(), clock.restart().asSeconds());
     Stage::getInstance()->dispatch(mrb_intern(engine->getState(), "enter_frame"), &delta, 1);
 
-    window->clear();
+    window->clear(sf::Color::White);
     Stage::getInstance()->render(window);
     window->display();
 
