@@ -24,7 +24,7 @@ void TTFont::render(sf::RenderTarget& renderer, const sf::Transform& transform, 
 
   sf::FloatRect localBounds = this->text.getLocalBounds();
   sf::Transform localTransform;
-  localTransform.scale(bounds.width / localBounds.width, bounds.height / localBounds.height);
+  // localTransform.scale(bounds.width / localBounds.width, bounds.height / localBounds.height);
   localTransform.translate(-localBounds.left, -localBounds.top);
 
   renderer.draw(this->text, transform * localTransform);

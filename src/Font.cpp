@@ -75,12 +75,11 @@ Font::Font(mrb_value self, const char *descriptor, const char *filename)
 void Font::render(sf::RenderTarget& target, const sf::Transform& transform, const sf::IntRect& bounds,
   const sf::Color& color, const char *text)
 {
-  int width;
-  int height;
-  getTextBounds(text, &width, &height);
+  sf::IntRect textBounds = getTextBounds(text);
 
   sf::Transform glyphTransform;
-  glyphTransform.scale(float(bounds.width) / width, float(bounds.height) / height);
+  glyphTransform.translate(-textBounds.left, -textBounds.top);
+  // glyphTransform.scale(float(bounds.width) / width, float(bounds.height) / height);
 
   for (int i = 0; i < strlen(text); ++i)
   {
@@ -94,16 +93,18 @@ void Font::render(sf::RenderTarget& target, const sf::Transform& transform, cons
   }
 }
 
-void Font::getTextBounds(const char *text, int* width, int* height)
+sf::IntRect Font::getTextBounds(const char *text)
 {
-  *width = 0;
-  *height = 0;
+  sf::IntRect bounds;
   for (int i = 0; i < strlen(text); ++i)
   {
     TextureGlyph glyph = fontInfo.glyphs[text[i]];
-    *width += glyph.advancex;
-    *height = max(*height, glyph.height + glyph.top);
+    if (i == 0) bounds.left = glyph.left;
+    bounds.top = min(bounds.top, glyph.top);
+    bounds.width += glyph.advancex;
+    bounds.height = max(bounds.height, glyph.height + glyph.top);
   }
+  return bounds;
 }
 
 static mrb_value Font_initialize(mrb_state *mrb, mrb_value self)

@@ -30,7 +30,7 @@ namespace RubyAction
     sf::Texture texture;
     sf::Sprite sprite;
 
-    void getTextBounds(const char *, int*, int*);
+    sf::IntRect getTextBounds(const char *);
 
   public:
     Font(mrb_value, const char *, const char *);
