@@ -26,12 +26,11 @@ class Button < RubyAction::Sprite
 
   def initialize up, down
     super
-    self.size = up.size
-
-    @up = up
-    @down = down
-
+    @up = RubyAction::Bitmap.new up
+    @down = RubyAction::Bitmap.new down
     @focus = false
+
+    self.size = @up.size
 
     update_visual_state false
 
@@ -42,11 +41,11 @@ class Button < RubyAction::Sprite
 
   def update_visual_state down
     if down then
-      remove_child @up
-      add_child @down
+      self >> @up
+      self << @down
     else
-      remove_child @down
-      add_child @up
+      self >> @down
+      self << @up
     end
   end
 

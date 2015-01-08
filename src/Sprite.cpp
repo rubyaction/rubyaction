@@ -678,16 +678,16 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "height=", Sprite_setHeight, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "size", Sprite_getSize, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "size=", Sprite_setSize, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "scale_x", Sprite_getScaleX, MRB_ARGS_NONE());
-  mrb_define_method(mrb, clazz, "scale_x=", Sprite_setScaleX, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "scale_y", Sprite_getScaleY, MRB_ARGS_NONE());
-  mrb_define_method(mrb, clazz, "scale_y=", Sprite_setScaleY, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "scalex", Sprite_getScaleX, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "scalex=", Sprite_setScaleX, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "scaley", Sprite_getScaleY, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "scaley=", Sprite_setScaleY, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "scale", Sprite_getScale, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "scale=", Sprite_setScale, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "anchor_x", Sprite_getAnchorX, MRB_ARGS_NONE());
-  mrb_define_method(mrb, clazz, "anchor_x=", Sprite_setAnchorX, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "anchor_y", Sprite_getAnchorY, MRB_ARGS_NONE());
-  mrb_define_method(mrb, clazz, "anchor_y=", Sprite_setAnchorY, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "anchorx", Sprite_getAnchorX, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "anchorx=", Sprite_setAnchorX, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "anchory", Sprite_getAnchorY, MRB_ARGS_NONE());
+  mrb_define_method(mrb, clazz, "anchory=", Sprite_setAnchorY, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "anchor", Sprite_getAnchor, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "anchor=", Sprite_setAnchor, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "rotation", Sprite_getRotation, MRB_ARGS_NONE());
@@ -697,16 +697,16 @@ void RubyAction::bindSprite(mrb_state *mrb, RClass *module)
   mrb_define_method(mrb, clazz, "parent", Sprite_getParent, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "color", Sprite_getColor, MRB_ARGS_NONE());
   mrb_define_method(mrb, clazz, "color=", Sprite_setColor, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "add_child", Sprite_addChild, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "remove_child", Sprite_removeChild, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "add", Sprite_addChild, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, clazz, "remove", Sprite_removeChild, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "remove_from_parent", Sprite_removeFromParent, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "contains?", Sprite_contains, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, clazz, "bounds", Sprite_getBounds, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, clazz, "global_to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
-  mrb_define_method(mrb, clazz, "local_to_global", Sprite_localToGlobal, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, clazz, "to_local", Sprite_globalToLocal, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, clazz, "to_global", Sprite_localToGlobal, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, clazz, "collide?", Sprite_collide, MRB_ARGS_REQ(2));
 
   // alias
-  mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add_child"));
-  mrb_alias_method(mrb, clazz, mrb_intern(mrb, ">>"), mrb_intern(mrb, "remove_child"));
+  mrb_alias_method(mrb, clazz, mrb_intern(mrb, "<<"), mrb_intern(mrb, "add"));
+  mrb_alias_method(mrb, clazz, mrb_intern(mrb, ">>"), mrb_intern(mrb, "remove"));
 }
