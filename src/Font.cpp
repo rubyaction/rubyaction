@@ -114,7 +114,7 @@ static mrb_value Font_initialize(mrb_state *mrb, mrb_value self)
   size_t length; // unused
   mrb_get_args(mrb, "ss", &descriptor, &length, &texture, &length);
 
-  SET_INSTANCE(self, new Font(self, descriptor, texture));
+  wrap(self, new Font(self, descriptor, texture));
   return self;
 }
 

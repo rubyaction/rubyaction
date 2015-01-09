@@ -27,14 +27,12 @@ static mrb_value TextureBase_initialize(mrb_state *mrb, mrb_value self)
 
 static mrb_value TextureBase_getWidth(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, base, TextureBase)
-  return mrb_fixnum_value(base->getWidth());
+  return mrb_fixnum_value(unwrap<TextureBase>(self)->getWidth());
 }
 
 static mrb_value TextureBase_getHeight(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, base, TextureBase)
-  return mrb_fixnum_value(base->getHeight());
+  return mrb_fixnum_value(unwrap<TextureBase>(self)->getHeight());
 }
 
 void RubyAction::bindTextureBase(mrb_state *mrb, RClass *module)

@@ -26,8 +26,7 @@ static mrb_value Texture_initialize(mrb_state *mrb, mrb_value self)
   const char *filename;
   size_t length;
   mrb_get_args(mrb, "s", &filename, &length);
-
-  SET_INSTANCE(self, new Texture(self, filename))
+  wrap(self, new Texture(self, filename));
   return self;
 }
 

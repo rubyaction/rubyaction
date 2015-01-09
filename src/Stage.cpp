@@ -18,8 +18,7 @@ void Stage::addChild(mrb_value child)
   if (!contains(child))
   {
     Sprite::addChild(child);
-    GET_INSTANCE(child, childSprite, Sprite)
-    childSprite->dispatch(mrb_intern(mrb, "added_to_stage"));
+    unwrap<Sprite>(child)->dispatch(mrb_intern(mrb, "added_to_stage"));
   }
 }
 
@@ -28,8 +27,7 @@ void Stage::removeChild(mrb_value child)
   if (contains(child))
   {
     Sprite::removeChild(child);
-    GET_INSTANCE(child, childSprite, Sprite)
-    childSprite->dispatch(mrb_intern(mrb, "removed_from_stage"));
+    unwrap<Sprite>(child)->dispatch(mrb_intern(mrb, "removed_from_stage"));
   }
 }
 
@@ -39,5 +37,5 @@ void RubyAction::bindStage(mrb_state *mrb, RClass *module)
   mrb_define_const(mrb, module, "Stage", stage);
 
   Stage::getInstance()->setSelf(stage);
-  SET_INSTANCE(stage, Stage::getInstance());
+  wrap(stage, Stage::getInstance());
 }

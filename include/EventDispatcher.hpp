@@ -2,8 +2,6 @@
 #define __EVENT_DISPATCHER__
 
 #include "RubyObject.hpp"
-#include <mruby.h>
-
 
 namespace RubyAction
 {

@@ -37,7 +37,7 @@ static mrb_value RenderTarget_initialize(mrb_state *mrb, mrb_value self)
   mrb_float width, height;
   mrb_get_args(mrb, "ff", &width, &height);
 
-  SET_INSTANCE(self, new RenderTarget(self, width, height))
+  wrap(self, new RenderTarget(self, width, height));
   return self;
 }
 
@@ -53,16 +53,13 @@ static mrb_value RenderTarget_draw(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
   }
 
-  GET_INSTANCE(self, renderTarget, RenderTarget)
-  GET_INSTANCE(s, sprite, Sprite)
-  renderTarget->draw(sprite);
+  unwrap<RenderTarget>(self)->draw(unwrap<Sprite>(s));
   return self;
 }
 
 static mrb_value RenderTarget_clear(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, renderTarget, RenderTarget)
-  renderTarget->clear();
+  unwrap<RenderTarget>(self)->clear();
   return self;
 }
 

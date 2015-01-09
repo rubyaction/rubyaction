@@ -3,7 +3,6 @@
 
 #include "RubyObject.hpp"
 #include <SFML/Graphics.hpp>
-#include <mruby.h>
 
 namespace RubyAction
 {

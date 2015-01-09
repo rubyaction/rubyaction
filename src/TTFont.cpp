@@ -36,8 +36,7 @@ static mrb_value TTFont_initialize(mrb_state *mrb, mrb_value self)
   size_t length;
   mrb_int size;
   mrb_get_args(mrb, "si", &filename, &length, &size);
-
-  SET_INSTANCE(self, new TTFont(self, filename, size));
+  wrap(self, new TTFont(self, filename, size));
   return self;
 }
 

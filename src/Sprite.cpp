@@ -156,8 +156,7 @@ void Sprite::render(sf::RenderTarget *renderer)
   for (int i = 0; i < RARRAY_LEN(children); i++)
   {
     mrb_value child = mrb_ary_ref(mrb, children, i);
-    GET_INSTANCE(child, sprite, Sprite)
-    sprite->render(renderer);
+    unwrap<Sprite>(child)->render(renderer);
   }
 }
 
@@ -166,7 +165,7 @@ void Sprite::addChild(mrb_value child)
   if (!contains(child))
   {
     mrb_ary_push(mrb, getProperty("children"), child);
-    GET_INSTANCE(child, childSprite, Sprite)
+    Sprite* childSprite = unwrap<Sprite>(child);
     childSprite->removeFromParent();
     childSprite->setParent(this);
   }
@@ -186,8 +185,7 @@ void Sprite::removeChild(mrb_value child)
     }
 
     setProperty("children", children);
-    GET_INSTANCE(child, childSprite, Sprite)
-    childSprite->setParent(NULL);
+    unwrap<Sprite>(child)->setParent(NULL);
   }
 }
 
@@ -245,8 +243,8 @@ void Sprite::dispatch(mrb_sym name, mrb_value* argv, int argc)
 
   for (int i = 0; i < RARRAY_LEN(children); i++)
   {
-    A_GET_TYPE(children, i, child, Sprite)
-    child->dispatch(name, argv, argc);
+    mrb_value child = mrb_ary_ref(mrb, children, i);
+    unwrap<Sprite>(child)->dispatch(name, argv, argc);
   }
 
   EventDispatcher::dispatch(name, argv, argc);
@@ -272,39 +270,33 @@ const sf::Transform& Sprite::getTransform()
 
 static mrb_value Sprite_initialize(mrb_state *mrb, mrb_value self)
 {
-  SET_INSTANCE(self, new Sprite(self));
+  wrap(self, new Sprite(self));
   return self;
 }
 
 static mrb_value Sprite_getX(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getX());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getX());
 }
 
 static mrb_value Sprite_setX(mrb_state *mrb, mrb_value self)
 {
   mrb_float x;
   mrb_get_args(mrb, "f", &x);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setX(x);
+  unwrap<Sprite>(self)->setX(x);
   return self;
 }
 
 static mrb_value Sprite_getY(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getY());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getY());
 }
 
 static mrb_value Sprite_setY(mrb_state *mrb, mrb_value self)
 {
   mrb_float y;
   mrb_get_args(mrb, "f", &y);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setY(y);
+  unwrap<Sprite>(self)->setY(y);
   return self;
 }
 
@@ -318,43 +310,35 @@ static mrb_value Sprite_setPosition(mrb_state *mrb, mrb_value self)
 {
   mrb_value position;
   mrb_get_args(mrb, "A", &position);
-
-  GET_INSTANCE(self, sprite, Sprite)
+  Sprite* sprite = unwrap<Sprite>(self);
   sprite->setX(A_GET_FLOAT(position, 0));
   sprite->setY(A_GET_FLOAT(position, 1));
-
   return self;
 }
 
 static mrb_value Sprite_getWidth(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_fixnum_value(sprite->getWidth());
+  return mrb_fixnum_value(unwrap<Sprite>(self)->getWidth());
 }
 
 static mrb_value Sprite_setWidth(mrb_state *mrb, mrb_value self)
 {
   mrb_int width;
   mrb_get_args(mrb, "i", &width);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setWidth(width);
+  unwrap<Sprite>(self)->setWidth(width);
   return self;
 }
 
 static mrb_value Sprite_getHeight(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_fixnum_value(sprite->getHeight());
+  return mrb_fixnum_value(unwrap<Sprite>(self)->getHeight());
 }
 
 static mrb_value Sprite_setHeight(mrb_state *mrb, mrb_value self)
 {
   mrb_int height;
   mrb_get_args(mrb, "i", &height);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setHeight(height);
+  unwrap<Sprite>(self)->setHeight(height);
   return self;
 }
 
@@ -368,8 +352,7 @@ static mrb_value Sprite_setSize(mrb_state *mrb, mrb_value self)
 {
   mrb_value size;
   mrb_get_args(mrb, "A", &size);
-
-  GET_INSTANCE(self, sprite, Sprite)
+  Sprite* sprite = unwrap<Sprite>(self);
   sprite->setWidth(A_GET_INT(size, 0));
   sprite->setHeight(A_GET_INT(size, 1));
   return self;
@@ -377,33 +360,27 @@ static mrb_value Sprite_setSize(mrb_state *mrb, mrb_value self)
 
 static mrb_value Sprite_getScaleX(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getScaleX());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getScaleX());
 }
 
 static mrb_value Sprite_setScaleX(mrb_state *mrb, mrb_value self)
 {
   mrb_float scaleX;
   mrb_get_args(mrb, "f", &scaleX);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setScaleX(scaleX);
+  unwrap<Sprite>(self)->setScaleX(scaleX);
   return self;
 }
 
 static mrb_value Sprite_getScaleY(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getScaleY());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getScaleY());
 }
 
 static mrb_value Sprite_setScaleY(mrb_state *mrb, mrb_value self)
 {
   mrb_float scaleY;
   mrb_get_args(mrb, "f", &scaleY);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setScaleY(scaleY);
+  unwrap<Sprite>(self)->setScaleY(scaleY);
   return self;
 }
 
@@ -417,8 +394,7 @@ static mrb_value Sprite_setScale(mrb_state *mrb, mrb_value self)
 {
   mrb_value scale;
   mrb_get_args(mrb, "A", &scale);
-
-  GET_INSTANCE(self, sprite, Sprite)
+  Sprite* sprite = unwrap<Sprite>(self);
   sprite->setScaleX(A_GET_FLOAT(scale, 0));
   sprite->setScaleY(A_GET_FLOAT(scale, 1));
   return self;
@@ -426,33 +402,27 @@ static mrb_value Sprite_setScale(mrb_state *mrb, mrb_value self)
 
 static mrb_value Sprite_getAnchorX(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getAnchorX());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getAnchorX());
 }
 
 static mrb_value Sprite_setAnchorX(mrb_state *mrb, mrb_value self)
 {
   mrb_float anchorX;
   mrb_get_args(mrb, "f", &anchorX);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setAnchorX(anchorX);
+  unwrap<Sprite>(self)->setAnchorX(anchorX);
   return self;
 }
 
 static mrb_value Sprite_getAnchorY(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getAnchorY());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getAnchorY());
 }
 
 static mrb_value Sprite_setAnchorY(mrb_state *mrb, mrb_value self)
 {
   mrb_float anchorY;
   mrb_get_args(mrb, "f", &anchorY);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setAnchorY(anchorY);
+  unwrap<Sprite>(self)->setAnchorY(anchorY);
   return self;
 }
 
@@ -466,8 +436,7 @@ static mrb_value Sprite_setAnchor(mrb_state *mrb, mrb_value self)
 {
   mrb_value anchor;
   mrb_get_args(mrb, "A", &anchor);
-
-  GET_INSTANCE(self, sprite, Sprite)
+  Sprite* sprite = unwrap<Sprite>(self);
   sprite->setAnchorX(A_GET_FLOAT(anchor, 0));
   sprite->setAnchorY(A_GET_FLOAT(anchor, 1));
   return self;
@@ -475,47 +444,39 @@ static mrb_value Sprite_setAnchor(mrb_state *mrb, mrb_value self)
 
 static mrb_value Sprite_getRotation(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_float_value(mrb, sprite->getRotation());
+  return mrb_float_value(mrb, unwrap<Sprite>(self)->getRotation());
 }
 
 static mrb_value Sprite_setRotation(mrb_state *mrb, mrb_value self)
 {
   mrb_float rotation;
   mrb_get_args(mrb, "f", &rotation);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setRotation(rotation);
+  unwrap<Sprite>(self)->setRotation(rotation);
   return self;
 }
 
 static mrb_value Sprite_isVisible(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_bool_value(sprite->isVisible());
+  return mrb_bool_value(unwrap<Sprite>(self)->isVisible());
 }
 
 static mrb_value Sprite_setVisible(mrb_state *mrb, mrb_value self)
 {
   mrb_bool visible;
   mrb_get_args(mrb, "b", &visible);
-
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setVisible(visible);
+  unwrap<Sprite>(self)->setVisible(visible);
   return self;
 }
 
 static mrb_value Sprite_getParent(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  Sprite *parent = sprite->getParent();
+  Sprite *parent = unwrap<Sprite>(self)->getParent();
   return parent ? parent->getSelf() : mrb_nil_value();
 }
 
 static mrb_value Sprite_getColor(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  const sf::Color color = sprite->getColor();
+  const sf::Color color = unwrap<Sprite>(self)->getColor();
   mrb_value c[4] = {
     mrb_float_value(mrb, float(color.r) / 255),
     mrb_float_value(mrb, float(color.g) / 255),
@@ -530,8 +491,7 @@ static mrb_value Sprite_setColor(mrb_state *mrb, mrb_value self)
   mrb_value color;
   mrb_get_args(mrb, "A", &color);
 
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->setColor(
+  unwrap<Sprite>(self)->setColor(
     sf::Color(
       A_GET_FLOAT(color, 0) * 255,
       A_GET_FLOAT(color, 1) * 255,
@@ -554,8 +514,7 @@ static mrb_value Sprite_addChild(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
   }
 
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->addChild(child);
+  unwrap<Sprite>(self)->addChild(child);
   return self;
 }
 
@@ -571,15 +530,13 @@ static mrb_value Sprite_removeChild(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
   }
 
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->removeChild(child);
+  unwrap<Sprite>(self)->removeChild(child);
   return self;
 }
 
 static mrb_value Sprite_removeFromParent(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->removeFromParent();
+  unwrap<Sprite>(self)->removeFromParent();
   return self;
 }
 
@@ -595,8 +552,7 @@ static mrb_value Sprite_contains(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
   }
 
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_bool_value(sprite->contains(child));
+  return mrb_bool_value(unwrap<Sprite>(self)->contains(child));
 }
 
 static mrb_value Sprite_getBounds(mrb_state *mrb, mrb_value self)
@@ -611,9 +567,7 @@ static mrb_value Sprite_getBounds(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_TYPE_ERROR, "expected Sprite");
   }
 
-  GET_INSTANCE(self, sprite, Sprite)
-  GET_INSTANCE(other, otherSprite, Sprite)
-  sf::FloatRect bounds = sprite->getBounds(otherSprite);
+  sf::FloatRect bounds = unwrap<Sprite>(self)->getBounds(unwrap<Sprite>(other));
 
   mrb_value point[4] = {
     mrb_float_value(mrb, bounds.left),
@@ -630,8 +584,7 @@ static mrb_value Sprite_globalToLocal(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "ff", &gx, &gy);
 
   float x, y;
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->globalToLocal(gx, gy, &x, &y);
+  unwrap<Sprite>(self)->globalToLocal(gx, gy, &x, &y);
 
   mrb_value point[2] = { mrb_float_value(mrb, x), mrb_float_value(mrb, y) };
   return mrb_ary_new_from_values(mrb, 2, point);
@@ -643,8 +596,7 @@ static mrb_value Sprite_localToGlobal(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "ff", &x, &y);
 
   float gx, gy;
-  GET_INSTANCE(self, sprite, Sprite)
-  sprite->localToGlobal(x, y, &gx, &gy);
+  unwrap<Sprite>(self)->localToGlobal(x, y, &gx, &gy);
 
   mrb_value point[2] = { mrb_float_value(mrb, gx), mrb_float_value(mrb, gy) };
   return mrb_ary_new_from_values(mrb, 2, point);
@@ -655,8 +607,7 @@ static mrb_value Sprite_collide(mrb_state *mrb, mrb_value self)
   mrb_float x, y;
   mrb_get_args(mrb, "ff", &x, &y);
 
-  GET_INSTANCE(self, sprite, Sprite)
-  return mrb_bool_value(sprite->collide(x, y));
+  return mrb_bool_value(unwrap<Sprite>(self)->collide(x, y));
 }
 
 void RubyAction::bindSprite(mrb_state *mrb, RClass *module)

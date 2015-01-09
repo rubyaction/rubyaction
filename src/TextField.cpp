@@ -42,7 +42,7 @@ static mrb_value TextField_initialize(mrb_state *mrb, mrb_value self)
   if (!mrb_obj_is_kind_of(mrb, font, engine->getClass("FontBase")))
     mrb_raise(mrb, E_TYPE_ERROR, "expected FontBase");
 
-  SET_INSTANCE(self, new TextField(self, font, text));
+  wrap(self, new TextField(self, font, text));
   return self;
 }
 
@@ -51,16 +51,13 @@ static mrb_value TextField_setText(mrb_state *mrb, mrb_value self)
   const char *text;
   size_t length;
   mrb_get_args(mrb, "s", &text, &length);
-
-  GET_INSTANCE(self, textField, TextField)
-  textField->setText(text);
+  unwrap<TextField>(self)->setText(text);
   return self;
 }
 
 static mrb_value TextField_getText(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, textField, TextField)
-  return mrb_str_new_cstr(mrb, textField->getText());
+  return mrb_str_new_cstr(mrb, unwrap<TextField>(self)->getText());
 }
 
 void RubyAction::bindTextField(mrb_state *mrb, RClass *module)

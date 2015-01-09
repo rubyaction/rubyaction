@@ -4,6 +4,10 @@
 #include <mruby.h>
 #include <mruby/compile.h>
 #include <mruby/proc.h>
+#include <mruby/data.h>
+#include <mruby/class.h>
+#include <mruby/string.h>
+#include <mruby/variable.h>
 
 namespace RubyAction
 {

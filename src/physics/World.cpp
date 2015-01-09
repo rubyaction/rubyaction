@@ -87,14 +87,13 @@ static mrb_value World_initialize(mrb_state *mrb, mrb_value self)
 
   if (argc == 2) doSleep = true;
 
-  SET_INSTANCE(self, new World(self, gravityx, gravityy, doSleep));
+  wrap(self, new World(self, gravityx, gravityy, doSleep));
   return self;
 }
 
 static mrb_value World_clearForces(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, world, World)
-  world->clearForces();
+  unwrap<World>(self)->clearForces();
   return self;
 }
 
@@ -102,15 +101,12 @@ static mrb_value World_createBody(mrb_state *mrb, mrb_value self)
 {
   mrb_value hash;
   int argc = mrb_get_args(mrb, "H", &hash);
-
-  GET_INSTANCE(self, world, World)
-  return world->createBody(hash)->getSelf();
+  return unwrap<World>(self)->createBody(hash)->getSelf();
 }
 
 static mrb_value World_getGravity(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, world, World)
-  int* xy = world->getGravity();
+  int* xy = unwrap<World>(self)->getGravity();
   mrb_value gravity[2] = { mrb_fixnum_value(xy[0]), mrb_fixnum_value(xy[1]) };
   delete[] xy;
   return mrb_ary_new_from_values(mrb, 2, gravity);
@@ -121,7 +117,7 @@ static mrb_value World_setGravity(mrb_state *mrb, mrb_value self)
   mrb_value gravity;
   mrb_get_args(mrb, "A", &gravity);
 
-  GET_INSTANCE(self, world, World)
+  World* world = unwrap<World>(self);
   world->setGravity(mrb_fixnum(mrb_ary_ref(mrb, gravity, 0)), mrb_fixnum(mrb_ary_ref(mrb, gravity, 1)));
   return self;
 }
@@ -135,8 +131,7 @@ static mrb_value World_raycast(mrb_state *mrb, mrb_value self)
   mrb_value callback;
   mrb_get_args(mrb, "iiii&", &x1, &y1, &x2, &y2, &callback);
 
-  GET_INSTANCE(self, world, World)
-  world->raycast(x1, y1, x2, y2, callback);
+  unwrap<World>(self)->raycast(x1, y1, x2, y2, callback);
   return self;
 }
 
@@ -147,8 +142,7 @@ static mrb_value World_step(mrb_state *mrb, mrb_value self)
   mrb_int positionIterations;
   mrb_get_args(mrb, "fii", &timeStep, &velocityIterations, &positionIterations);
 
-  GET_INSTANCE(self, world, World)
-  world->step(timeStep, velocityIterations, positionIterations);
+  unwrap<World>(self)->step(timeStep, velocityIterations, positionIterations);
   return self;
 }
 

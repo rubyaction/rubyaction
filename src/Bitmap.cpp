@@ -39,7 +39,7 @@ static mrb_value Bitmap_initialize(mrb_state *mrb, mrb_value self)
   else
     mrb_raise(mrb, E_TYPE_ERROR, "expected TextureBase or TextureRegion");
 
-  SET_INSTANCE(self, new Bitmap(self, texture_region));
+  wrap(self, new Bitmap(self, texture_region));
   return self;
 }
 

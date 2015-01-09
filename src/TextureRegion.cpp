@@ -59,20 +59,20 @@ static mrb_value TextureRegion_initialize(mrb_state *mrb, mrb_value self)
 
   mrb_iv_set(mrb, self, mrb_intern(mrb, "texture_base"), tex);
 
-  GET_INSTANCE(tex, texture, TextureBase)
+  TextureBase* texture = unwrap<TextureBase>(tex);
 
   if (argc < 2) x = 0;
   if (argc < 3) y = 0;
   if (argc < 4) width = texture->getWidth() - x;
   if (argc < 5) height = texture->getHeight() - y;
 
-  SET_INSTANCE(self, new TextureRegion(self, x, y, width, height))
+  wrap(self, new TextureRegion(self, x, y, width, height));
   return self;
 }
 
 static mrb_value TextureRegion_getRegion(mrb_state *mrb, mrb_value self)
 {
-  GET_INSTANCE(self, textureRegion, TextureRegion)
+  TextureRegion* textureRegion = unwrap<TextureRegion>(self);
   mrb_value region[4] = {
     mrb_fixnum_value(textureRegion->getX()),
     mrb_fixnum_value(textureRegion->getY()),
@@ -86,9 +86,7 @@ static mrb_value TextureRegion_setRegion(mrb_state *mrb, mrb_value self)
 {
   mrb_value region;
   mrb_get_args(mrb, "A", &region);
-
-  GET_INSTANCE(self, textureRegion, TextureRegion)
-  textureRegion->setRegion(
+  unwrap<TextureRegion>(self)->setRegion(
     A_GET_INT(region, 0),
     A_GET_INT(region, 1),
     A_GET_INT(region, 2),

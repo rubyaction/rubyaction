@@ -2,7 +2,6 @@
 #define __FONT_BASE__
 
 #include "RubyObject.hpp"
-#include <mruby.h>
 #include <SFML/Graphics.hpp>
 
 namespace RubyAction

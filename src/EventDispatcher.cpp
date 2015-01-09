@@ -45,7 +45,7 @@ void EventDispatcher::dispatch(mrb_sym name, mrb_value* argv, int argc)
 
 static mrb_value EventDispatcher_initialize(mrb_state *mrb, mrb_value self)
 {
-  SET_INSTANCE(self, new EventDispatcher(self))
+  wrap(self, new EventDispatcher(self));
   return self;
 }
 
@@ -58,9 +58,7 @@ static mrb_value EventDispatcher_on(mrb_state *mrb, mrb_value self)
 
   if (argc == 2) listener = mrb_symbol_value(method);
 
-  GET_INSTANCE(self, dispatcher, EventDispatcher)
-  dispatcher->on(name, listener);
-
+  unwrap<EventDispatcher>(self)->on(name, listener);
   return self;
 }
 
@@ -69,7 +67,7 @@ static mrb_value EventDispatcher_off(mrb_state *mrb, mrb_value self)
   mrb_sym name;
   int argc = mrb_get_args(mrb, "|n", &name);
 
-  GET_INSTANCE(self, dispatcher, EventDispatcher)
+  EventDispatcher* dispatcher = unwrap<EventDispatcher>(self);
 
   if (argc == 0)
     dispatcher->off();
@@ -86,9 +84,7 @@ static mrb_value EventDispatcher_dispatch(mrb_state *mrb, mrb_value self)
   int argc;
   mrb_get_args(mrb, "n*", &name, &argv, &argc);
 
-  GET_INSTANCE(self, dispatcher, EventDispatcher)
-  dispatcher->dispatch(name, argv, argc);
-
+  unwrap<EventDispatcher>(self)->dispatch(name, argv, argc);
   return self;
 }
 
