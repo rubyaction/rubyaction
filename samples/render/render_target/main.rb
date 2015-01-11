@@ -21,7 +21,7 @@ RubyAction::Stage.on :enter_frame do |dt|
   frame = frame + 1
 
   # update crate
-  crate.color = [r * 255, g * 255, b * 255, 255]
+  crate.color = [r, g, b, 1]
   crate.x += dt * 50
   crate.y += dt * 40
   crate.rotation += dt * 50
